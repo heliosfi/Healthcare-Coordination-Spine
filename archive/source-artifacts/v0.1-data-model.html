@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><style>
+@font-face {
+  font-family: "Optimistic";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("/fonts/OptimisticAI_VF_Optimized.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Optimistic Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/OptimisticMono_W_TextRegular.woff2") format("woff2");
+}
+:where(html) {
+  font-family: "Optimistic", system-ui, sans-serif;
+}
+:where(code, pre, kbd, samp) {
+  font-family: "Optimistic Mono", ui-monospace, monospace;
+}
+</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Healthcare Coordination Spine — v0.1 Data Model</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    html { font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    code, pre, .mono { font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-thumb { background: #d4d4d8; border-radius: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    .prose-code { font-variant-ligatures: none; }
+    @media (prefers-reduced-motion: no-preference) {
+      .fade-in { animation: fade 0.4s ease-out; }
+      @keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+    }
+  </style>
+</head>
+<body class="bg-[#fafafa] text-zinc-900 antialiased">
+  <header class="sticky top-0 z-40 border-b border-zinc-200 bg-white/80 backdrop-blur-xl">
+    <div class="mx-auto max-w-[1160px] px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between py-4 gap-4">
+        <div class="min-w-0">
+          <div class="flex items-center gap-2">
+            <div class="h-8 w-8 rounded-lg bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center shadow-sm">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="text-white"><path d="M12 3v18M3 12h18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+            </div>
+            <p class="text-[11px] uppercase tracking-[0.14em] text-zinc-500 font-medium">Healthcare Coordination Spine</p>
+          </div>
+          <h1 class="mt-2 text-[22px] sm:text-[28px] font-semibold tracking-tight leading-tight">v0.1 Data Model — Minimum Viable Coordination Object</h1>
+          <p class="mt-1.5 text-[14px] sm:text-[15px] text-zinc-600 max-w-3xl">Implements the frozen v0.1: status, source, responsible actor, next action, with provenance and conflict handling.</p>
+        </div>
+        <div class="hidden sm:flex items-center gap-2 shrink-0">
+          <span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-medium border border-emerald-200">v0.1 FROZEN</span>
+          <span class="px-2.5 py-1 rounded-full bg-zinc-900 text-white text-xs mono">2026-10-03</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="mx-auto max-w-[1160px] px-4 sm:px-6 lg:px-8 py-6 lg:py-10">
+    <div class="lg:grid lg:grid-cols-[220px_1fr] lg:gap-12">
+      <!-- Desktop Nav -->
+      <aside class="hidden lg:block">
+        <nav class="sticky top-[108px] space-y-1 text-[13px]">
+          <p class="px-3 pb-2 text-[11px] uppercase tracking-widest text-zinc-400 font-medium">Sections</p>
+          <a href="#principles" class="block px-3 py-1.5 rounded-md hover:bg-zinc-100 text-zinc-700">1. Design principles</a>
+          <a href="#schema" class="block px-3 py-1.5 rounded-md hover:bg-zinc-100 text-zinc-700">2. Core JSON schema</a>
+          <a href="#status" class="block px-3 py-1.5 rounded-md hover:bg-zinc-100 text-zinc-700">3. Status enum</a>
+          <a href="#happy-path" class="block px-3 py-1.5 rounded-md hover:bg-zinc-100 text-zinc-700">3a. Happy-path example</a>
+          <a href="#conflict" class="block px-3 py-1.5 rounded-md hover:bg-zinc-100 text-zinc-700">4. Conflict object</a>
+          <a href="#authority" class="block px-3 py-1.5 rounded-md hover:bg-zinc-100 text-zinc-700">5. Authority enforcement</a>
+          <a href="#adapters" class="block px-3 py-1.5 rounded-md hover:bg-zinc-100 text-zinc-700">6. Adapter mapping</a>
+        </nav>
+      </aside>
+
+      <!-- Mobile Nav -->
+      <div class="lg:hidden -mx-4 px-4 mb-6 overflow-x-auto">
+        <div class="flex gap-2 w-max">
+          <a href="#principles" class="px-3 py-1.5 rounded-full bg-white border text-xs">Principles</a>
+          <a href="#schema" class="px-3 py-1.5 rounded-full bg-white border text-xs">Schema</a>
+          <a href="#status" class="px-3 py-1.5 rounded-full bg-white border text-xs">Status</a>
+          <a href="#happy-path" class="px-3 py-1.5 rounded-full bg-white border text-xs">Happy Path</a>
+          <a href="#conflict" class="px-3 py-1.5 rounded-full bg-white border text-xs">Conflict</a>
+          <a href="#authority" class="px-3 py-1.5 rounded-full bg-white border text-xs">Authority</a>
+          <a href="#adapters" class="px-3 py-1.5 rounded-full bg-white border text-xs">Adapters</a>
+        </div>
+      </div>
+
+      <main class="min-w-0 space-y-12">
+        <!-- Section 1 -->
+        <section id="principles" class="fade-in scroll-mt-24">
+          <div class="flex items-baseline gap-3 mb-4">
+            <h2 class="text-[17px] font-semibold tracking-tight">1. Design principles</h2>
+            <div class="h-px flex-1 bg-gradient-to-r from-zinc-200 to-transparent"></div>
+          </div>
+          <div class="grid sm:grid-cols-2 gap-3">
+            <div class="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm hover:shadow-md transition">
+              <div class="absolute -right-6 -top-6 h-16 w-16 rounded-full bg-violet-50 group-hover:bg-violet-100 transition"></div>
+              <p class="text-sm font-medium text-zinc-900">Access does not create authority</p>
+              <p class="mt-1 text-[13px] text-zinc-600">Reading a record confers no write privileges.</p>
+            </div>
+            <div class="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm hover:shadow-md transition">
+              <div class="absolute -right-6 -top-6 h-16 w-16 rounded-full bg-indigo-50 group-hover:bg-indigo-100 transition"></div>
+              <p class="text-sm font-medium text-zinc-900">Spine never overwrites source data</p>
+              <p class="mt-1 text-[13px] text-zinc-600">Spine indexes and references, it does not replace.</p>
+            </div>
+            <div class="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm hover:shadow-md transition">
+              <div class="absolute -right-6 -top-6 h-16 w-16 rounded-full bg-emerald-50 group-hover:bg-emerald-100 transition"></div>
+              <p class="text-sm font-medium text-zinc-900">Every consequential state is source-attributed</p>
+              <p class="mt-1 text-[13px] text-zinc-600">status + source + timestamp are inseparable.</p>
+            </div>
+            <div class="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm hover:shadow-md transition">
+              <div class="absolute -right-6 -top-6 h-16 w-16 rounded-full bg-amber-50 group-hover:bg-amber-100 transition"></div>
+              <p class="text-sm font-medium text-zinc-900">Conflict is a first-class state, not silent overwrite</p>
+              <p class="mt-1 text-[13px] text-zinc-600">Disagreement creates HOLD, not last-write-wins.</p>
+            </div>
+          </div>
+          <div class="mt-6 rounded-2xl border border-indigo-200 bg-gradient-to-br from-indigo-50 to-violet-50 p-5 shadow-sm">
+            <div class="flex items-start gap-3">
+              <div class="mt-0.5 h-6 w-6 rounded-lg bg-indigo-600 text-white flex items-center justify-center shrink-0">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+              </div>
+              <div>
+                <p class="text-[14px] font-semibold text-indigo-900 tracking-tight">Responsibility moves. Authority does not.</p>
+                <p class="mt-1.5 text-[13px] leading-relaxed text-indigo-900/80">When a prescription moves to APPROVED, responsibility shifts from payer to pharmacy — but the payer retains sole authority over coverage decisions and gains no pharmacy authority. When it becomes READY, responsibility shifts to the patient for pickup, but the prescriber stops being responsible while retaining full clinical authority. The Spine tracks handoffs without transferring write privileges.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 2 -->
+        <section id="schema" class="scroll-mt-24">
+          <div class="flex items-baseline gap-3 mb-4">
+            <h2 class="text-[17px] font-semibold tracking-tight">2. Core JSON schema</h2>
+            <div class="h-px flex-1 bg-gradient-to-r from-zinc-200 to-transparent"></div>
+          </div>
+          <p class="text-[14px] text-zinc-600 mb-3">Show formatted JSON example for a prescription coordination node:</p>
+          <div class="relative group">
+            <button onclick="copyCode(this, 'schema-code')" class="absolute right-3 top-3 z-10 px-2.5 py-1.5 text-[11px] font-medium rounded-lg bg-zinc-800 text-zinc-100 hover:bg-black transition opacity-0 group-hover:opacity-100">Copy</button>
+            <pre class="overflow-x-auto rounded-2xl bg-zinc-900 text-zinc-100 p-4 sm:p-6 text-[12.5px] leading-[1.75] shadow-lg border border-zinc-800"><code id="schema-code" class="mono prose-code">{
+  "coordination_id": "coord_rx_9f82a1",
+  "workflow_type": "prescription_coordination",
+  "patient": {
+    "patient_ref": "pat_12345",
+    "consent_version": "2026-09-01"
+  },
+  "prescription": {
+    "rx_id": "rx_abc789",
+    "prescriber_npi": "1234567890",
+    "drug": "atorvastatin 20mg",
+    "source_system": "Epic@Ochsner"
+  },
+  "current_state": {
+    "status": "NEEDS_INFORMATION",
+    "source": "Health Plan X",
+    "responsible_actor": "PRESCRIBER",
+    "next_required_action": "Submit supporting clinical documentation for PA",
+    "patient_action": "None",
+    "last_updated": "2026-10-03T08:42:00-04:00",
+    "confidence": "source-confirmed"
+  },
+  "provenance": [
+    {
+      "event": "PA_SUBMITTED",
+      "source": "CoverMyMeds",
+      "timestamp": "2026-10-02T14:10:00-04:00",
+      "actor": "PRESCRIBER"
+    },
+    {
+      "event": "PAYER_REVIEW",
+      "source": "Health Plan X",
+      "timestamp": "2026-10-03T08:40:00-04:00",
+      "actor": "PAYER",
+      "note": "Needs information"
+    }
+  ],
+  "conflict": null
+}</code></pre>
+          </div>
+        </section>
+
+        <!-- Section 3 -->
+        <section id="status" class="scroll-mt-24">
+          <div class="flex items-baseline gap-3 mb-4">
+            <h2 class="text-[17px] font-semibold tracking-tight">3. Status enum (v0.1)</h2>
+            <div class="h-px flex-1 bg-gradient-to-r from-zinc-200 to-transparent"></div>
+          </div>
+          <div class="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
+            <div class="flex flex-wrap gap-2">
+              <span class="px-2.5 py-1 rounded-md bg-zinc-900 text-white text-[11px] mono">PRESCRIBED</span>
+              <span class="px-2.5 py-1 rounded-md bg-zinc-100 text-zinc-800 text-[11px] mono border">PRESCRIPTION_RECEIVED</span>
+              <span class="px-2.5 py-1 rounded-md bg-zinc-100 text-zinc-800 text-[11px] mono border">COVERAGE_CHECK</span>
+              <span class="px-2.5 py-1 rounded-md bg-zinc-100 text-zinc-800 text-[11px] mono border">PA_NOT_REQUIRED</span>
+              <span class="px-2.5 py-1 rounded-md bg-zinc-100 text-zinc-800 text-[11px] mono border">PA_REQUIRED</span>
+              <span class="px-2.5 py-1 rounded-md bg-zinc-100 text-zinc-800 text-[11px] mono border">PA_SUBMITTED</span>
+              <span class="px-2.5 py-1 rounded-md bg-amber-100 text-amber-900 text-[11px] mono border border-amber-200">PAYER_REVIEW</span>
+              <span class="px-2.5 py-1 rounded-md bg-amber-100 text-amber-900 text-[11px] mono border border-amber-200">NEEDS_INFORMATION</span>
+              <span class="px-2.5 py-1 rounded-md bg-amber-100 text-amber-900 text-[11px] mono border border-amber-200">PROVIDER_ACTION</span>
+              <span class="px-2.5 py-1 rounded-md bg-red-100 text-red-900 text-[11px] mono border border-red-200">DENIED</span>
+              <span class="px-2.5 py-1 rounded-md bg-emerald-100 text-emerald-900 text-[11px] mono border border-emerald-200">APPROVED</span>
+              <span class="px-2.5 py-1 rounded-md bg-zinc-100 text-zinc-800 text-[11px] mono border">PHARMACY_PROCESSING</span>
+              <span class="px-2.5 py-1 rounded-md bg-emerald-100 text-emerald-900 text-[11px] mono border border-emerald-200">READY</span>
+              <span class="px-2.5 py-1 rounded-md bg-zinc-100 text-zinc-800 text-[11px] mono border">DISPENSED</span>
+              <span class="px-2.5 py-1 rounded-md bg-violet-100 text-violet-900 text-[11px] mono border border-violet-200">PATIENT_RECEIPT_KNOWN</span>
+              <span class="px-2.5 py-1 rounded-md bg-zinc-100 text-zinc-800 text-[11px] mono border">FOLLOW_UP</span>
+              <span class="px-2.5 py-1 rounded-md bg-slate-900 text-white text-[11px] mono border border-slate-800">CLOSED</span>
+              <span class="px-2.5 py-1 rounded-md bg-red-100 text-red-900 text-[11px] mono border border-red-200">CONFLICT_DETECTED</span>
+              <span class="px-2.5 py-1 rounded-md bg-orange-100 text-orange-900 text-[11px] mono border border-orange-200">HOLD</span>
+              <span class="px-2.5 py-1 rounded-md bg-orange-100 text-orange-900 text-[11px] mono border border-orange-200">SOURCE_RECONCILIATION</span>
+              <span class="px-2.5 py-1 rounded-md bg-emerald-100 text-emerald-900 text-[11px] mono border border-emerald-200">VERIFIED_STATE</span>
+            </div>
+            <p class="mt-3 text-[12px] text-zinc-500">List: PRESCRIBED, PRESCRIPTION_RECEIVED, COVERAGE_CHECK, PA_NOT_REQUIRED, PA_REQUIRED, PA_SUBMITTED, PAYER_REVIEW, NEEDS_INFORMATION, PROVIDER_ACTION, DENIED, APPROVED, PHARMACY_PROCESSING, READY, DISPENSED, PATIENT_RECEIPT_KNOWN, FOLLOW_UP, CLOSED, CONFLICT_DETECTED, HOLD, SOURCE_RECONCILIATION, VERIFIED_STATE</p>
+            <p class="mt-2 text-[12px] text-zinc-600"><span class="font-medium">CLOSED:</span> terminal state for successfully completed coordination episode, requires completion criteria.</p>
+          </div>
+        </section>
+
+        <!-- Section 3a -->
+        <section id="happy-path" class="scroll-mt-24">
+          <div class="flex items-baseline gap-3 mb-4">
+            <h2 class="text-[17px] font-semibold tracking-tight">3a. Happy-path progression — responsibility handoffs</h2>
+            <div class="h-px flex-1 bg-gradient-to-r from-zinc-200 to-transparent"></div>
+          </div>
+          <p class="text-[14px] text-zinc-600 mb-3">Progression shows how <span class="font-medium">responsible_actor</span> changes at each step while source authority remains fixed:</p>
+          <div class="relative group">
+            <button onclick="copyCode(this, 'happy-path-code')" class="absolute right-3 top-3 z-10 px-2.5 py-1.5 text-[11px] font-medium rounded-lg bg-zinc-800 text-zinc-100 hover:bg-black transition opacity-0 group-hover:opacity-100">Copy</button>
+            <pre class="overflow-x-auto rounded-2xl bg-zinc-900 text-zinc-100 p-4 sm:p-6 text-[12.5px] leading-[1.75] shadow-lg border border-zinc-800"><code id="happy-path-code" class="mono prose-code">[
+  {
+    "status": "APPROVED",
+    "source": "Health Plan X",
+    "responsible_actor": "PHARMACY",
+    "next_required_action": "Process fill",
+    "patient_action": "None",
+    "timestamp": "2026-10-03T10:15:00-04:00"
+  },
+  {
+    "status": "PHARMACY_PROCESSING",
+    "source": "Pharmacy",
+    "responsible_actor": "PHARMACY",
+    "patient_action": "None",
+    "timestamp": "2026-10-03T10:22:00-04:00"
+  },
+  {
+    "status": "READY",
+    "source": "Pharmacy",
+    "responsible_actor": "PATIENT",
+    "patient_action": "Pick up prescription",
+    "next_required_action": "Patient pickup",
+    "timestamp": "2026-10-03T14:05:00-04:00"
+  },
+  {
+    "status": "DISPENSED",
+    "source": "Pharmacy",
+    "responsible_actor": "PATIENT",
+    "patient_action": "Confirm receipt",
+    "timestamp": "2026-10-03T16:40:00-04:00"
+  },
+  {
+    "status": "PATIENT_RECEIPT_KNOWN",
+    "source": "Patient",
+    "confidence": "patient-reported",
+    "responsible_actor": "PRESCRIBER",
+    "timestamp": "2026-10-03T18:10:00-04:00"
+  },
+  {
+    "status": "FOLLOW_UP",
+    "source": "Prescriber",
+    "responsible_actor": "PRESCRIBER",
+    "next_required_action": "Schedule adherence check",
+    "timestamp": "2026-10-10T09:00:00-04:00"
+  },
+  {
+    "status": "CLOSED",
+    "source": "Spine",
+    "responsible_actor": null,
+    "closure_reason": "workflow_complete",
+    "timestamp": "2026-10-17T09:00:00-04:00"
+  }
+]</code></pre>
+          </div>
+        </section>
+
+        <!-- Section 4 -->
+        <section id="conflict" class="scroll-mt-24">
+          <div class="flex items-baseline gap-3 mb-4">
+            <h2 class="text-[17px] font-semibold tracking-tight">4. Conflict object</h2>
+            <div class="h-px flex-1 bg-gradient-to-r from-zinc-200 to-transparent"></div>
+          </div>
+          <p class="text-[14px] text-zinc-600 mb-3">When sources disagree, do not overwrite. Example:</p>
+          <div class="relative group">
+            <button onclick="copyCode(this, 'conflict-code')" class="absolute right-3 top-3 z-10 px-2.5 py-1.5 text-[11px] font-medium rounded-lg bg-zinc-800 text-zinc-100 hover:bg-black transition opacity-0 group-hover:opacity-100">Copy</button>
+            <pre class="overflow-x-auto rounded-2xl bg-zinc-900 text-zinc-100 p-4 sm:p-6 text-[12.5px] leading-[1.75] shadow-lg border border-zinc-800"><code id="conflict-code" class="mono prose-code">"conflict": {
+  "detected_at": "2026-10-03T09:00:00-04:00",
+  "sources": [
+    {"system": "Surescripts", "value": "APPROVED"},
+    {"system": "Health Plan X", "value": "NEEDS_INFORMATION"}
+  ],
+  "resolution_state": "HOLD",
+  "responsible_actor": "SPINE",
+  "next_required_action": "Reconcile with payer source of truth",
+  "promotion_blocked": true,
+  "hold_reason": "Conflicting authoritative sources"
+}</code></pre>
+          </div>
+          <div class="mt-3 rounded-xl border border-amber-200 bg-amber-50 p-4">
+            <p class="text-[13px] text-amber-900 leading-relaxed"><span class="font-semibold">Conflict semantics:</span> The Spine does NOT prevent upstream systems from publishing APPROVED. It prevents promotion of that signal into the Spine's verified <span class="mono">current_state</span> until reconciliation.</p>
+          </div>
+        </section>
+
+        <!-- Section 5 -->
+        <section id="authority" class="scroll-mt-24">
+          <div class="flex items-baseline gap-3 mb-4">
+            <h2 class="text-[17px] font-semibold tracking-tight">5. Authority enforcement</h2>
+            <div class="h-px flex-1 bg-gradient-to-r from-zinc-200 to-transparent"></div>
+          </div>
+          
+          <!-- Desktop table -->
+          <div class="hidden md:block overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm">
+            <table class="w-full text-[13px]">
+              <thead class="bg-zinc-50 border-b border-zinc-200">
+                <tr>
+                  <th class="text-left px-4 py-3 font-semibold text-zinc-700">Actor</th>
+                  <th class="text-left px-4 py-3 font-semibold text-zinc-700">Can write to</th>
+                  <th class="text-left px-4 py-3 font-semibold text-zinc-700">Cannot write to</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-zinc-100">
+                <tr class="hover:bg-zinc-50/50">
+                  <td class="px-4 py-3 font-medium mono text-[12px]">PATIENT</td>
+                  <td class="px-4 py-3 text-zinc-700">patient.preferences, patient-reported receipt</td>
+                  <td class="px-4 py-3 text-zinc-600">clinical orders, payer decisions</td>
+                </tr>
+                <tr class="hover:bg-zinc-50/50">
+                  <td class="px-4 py-3 font-medium mono text-[12px]">PRESCRIBER</td>
+                  <td class="px-4 py-3 text-zinc-700">prescription.clinical, PA clinical docs</td>
+                  <td class="px-4 py-3 text-zinc-600">pharmacy dispense state, payer coverage</td>
+                </tr>
+                <tr class="hover:bg-zinc-50/50">
+                  <td class="px-4 py-3 font-medium mono text-[12px]">PHARMACY</td>
+                  <td class="px-4 py-3 text-zinc-700">dispense events, ready-for-pickup</td>
+                  <td class="px-4 py-3 text-zinc-600">prescriber orders, PA approval</td>
+                </tr>
+                <tr class="hover:bg-zinc-50/50">
+                  <td class="px-4 py-3 font-medium mono text-[12px]">PAYER</td>
+                  <td class="px-4 py-3 text-zinc-700">coverage, PA decision</td>
+                  <td class="px-4 py-3 text-zinc-600">prescription details</td>
+                </tr>
+                <tr class="hover:bg-zinc-50/50">
+                  <td class="px-4 py-3 font-medium mono text-[12px]">SPINE</td>
+                  <td class="px-4 py-3 text-zinc-700">current_state metadata, provenance, conflict</td>
+                  <td class="px-4 py-3 text-zinc-600">source clinical or coverage data</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Mobile cards -->
+          <div class="md:hidden space-y-3">
+            <div class="rounded-xl border border-zinc-200 bg-white p-4">
+              <p class="mono text-[12px] font-semibold">PATIENT</p>
+              <p class="mt-2 text-[11px] uppercase tracking-wide text-zinc-500">Can write</p>
+              <p class="text-[13px]">patient.preferences, patient-reported receipt</p>
+              <p class="mt-2 text-[11px] uppercase tracking-wide text-zinc-500">Cannot write</p>
+              <p class="text-[13px] text-zinc-600">clinical orders, payer decisions</p>
+            </div>
+            <div class="rounded-xl border border-zinc-200 bg-white p-4">
+              <p class="mono text-[12px] font-semibold">PRESCRIBER</p>
+              <p class="mt-2 text-[11px] uppercase tracking-wide text-zinc-500">Can write</p>
+              <p class="text-[13px]">prescription.clinical, PA clinical docs</p>
+              <p class="mt-2 text-[11px] uppercase tracking-wide text-zinc-500">Cannot write</p>
+              <p class="text-[13px] text-zinc-600">pharmacy dispense state, payer coverage</p>
+            </div>
+            <div class="rounded-xl border border-zinc-200 bg-white p-4">
+              <p class="mono text-[12px] font-semibold">PHARMACY</p>
+              <p class="mt-2 text-[11px] uppercase tracking-wide text-zinc-500">Can write</p>
+              <p class="text-[13px]">dispense events, ready-for-pickup</p>
+              <p class="mt-2 text-[11px] uppercase tracking-wide text-zinc-500">Cannot write</p>
+              <p class="text-[13px] text-zinc-600">prescriber orders, PA approval</p>
+            </div>
+            <div class="rounded-xl border border-zinc-200 bg-white p-4">
+              <p class="mono text-[12px] font-semibold">PAYER</p>
+              <p class="mt-2 text-[11px] uppercase tracking-wide text-zinc-500">Can write</p>
+              <p class="text-[13px]">coverage, PA decision</p>
+              <p class="mt-2 text-[11px] uppercase tracking-wide text-zinc-500">Cannot write</p>
+              <p class="text-[13px] text-zinc-600">prescription details</p>
+            </div>
+            <div class="rounded-xl border border-zinc-200 bg-white p-4">
+              <p class="mono text-[12px] font-semibold">SPINE</p>
+              <p class="mt-2 text-[11px] uppercase tracking-wide text-zinc-500">Can write</p>
+              <p class="text-[13px]">current_state metadata, provenance, conflict</p>
+              <p class="mt-2 text-[11px] uppercase tracking-wide text-zinc-500">Cannot write</p>
+              <p class="text-[13px] text-zinc-600">source clinical or coverage data</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 6 -->
+        <section id="adapters" class="scroll-mt-24">
+          <div class="flex items-baseline gap-3 mb-4">
+            <h2 class="text-[17px] font-semibold tracking-tight">6. Adapter mapping (v0.1)</h2>
+            <div class="h-px flex-1 bg-gradient-to-r from-zinc-200 to-transparent"></div>
+          </div>
+          <p class="text-[14px] text-zinc-600 mb-4">Show how external systems feed the model without being replaced:</p>
+          <div class="rounded-2xl border border-zinc-200 bg-white p-5 sm:p-6 shadow-sm">
+            <ul class="space-y-4 text-[14px]">
+              <li class="flex gap-3">
+                <div class="mt-0.5 h-5 w-5 rounded-full bg-violet-100 text-violet-700 flex items-center justify-center shrink-0">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                </div>
+                <div>
+                  <span class="font-medium">Surescripts RTPB</span>
+                  <span class="text-zinc-500 mx-1">→</span>
+                  <span class="mono text-[12px] bg-zinc-100 px-1.5 py-0.5 rounded">current_state.source = "Surescripts"</span>, 
+                  <span class="mono text-[12px] bg-zinc-100 px-1.5 py-0.5 rounded">status = COVERAGE_CHECK</span>
+                </div>
+              </li>
+              <li class="flex gap-3">
+                <div class="mt-0.5 h-5 w-5 rounded-full bg-violet-100 text-violet-700 flex items-center justify-center shrink-0">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                </div>
+                <div>
+                  <span class="font-medium">CoverMyMeds PA</span>
+                  <span class="text-zinc-500 mx-1">→</span>
+                  <span class="mono text-[12px] bg-zinc-100 px-1.5 py-0.5 rounded">provenance event PA_SUBMITTED</span>, 
+                  <span class="mono text-[12px] bg-zinc-100 px-1.5 py-0.5 rounded">source = "CoverMyMeds"</span>
+                </div>
+              </li>
+              <li class="flex gap-3">
+                <div class="mt-0.5 h-5 w-5 rounded-full bg-violet-100 text-violet-700 flex items-center justify-center shrink-0">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                </div>
+                <div>
+                  <span class="font-medium">Epic MyChart</span>
+                  <span class="text-zinc-500 mx-1">→</span>
+                  <span class="text-zinc-700">patient_action visibility</span>
+                </div>
+              </li>
+              <li class="flex gap-3">
+                <div class="mt-0.5 h-5 w-5 rounded-full bg-violet-100 text-violet-700 flex items-center justify-center shrink-0">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                </div>
+                <div>
+                  <span class="font-medium">Zus/Particle</span>
+                  <span class="text-zinc-500 mx-1">→</span>
+                  <span class="text-zinc-700">patient longitudinal context (read-only)</span>
+                </div>
+              </li>
+              <li class="flex gap-3">
+                <div class="mt-0.5 h-5 w-5 rounded-full bg-violet-100 text-violet-700 flex items-center justify-center shrink-0">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                </div>
+                <div>
+                  <span class="font-medium">Redox</span>
+                  <span class="text-zinc-500 mx-1">→</span>
+                  <span class="text-zinc-700">transport adapter, not authority</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Footer note -->
+        <footer class="pt-8 pb-12">
+          <div class="rounded-2xl border border-violet-200 bg-gradient-to-br from-violet-50 to-indigo-50 p-5 sm:p-6">
+            <p class="text-[13px] leading-relaxed text-zinc-800">
+              <span class="font-medium text-violet-900">Model intent:</span> This model implements <em>"where is the prescription, what is blocking it, and who is responsible"</em> with source attribution, not just PA status.
+            </p>
+          </div>
+          <p class="mt-6 text-center text-[11px] text-zinc-400">Healthcare Coordination Spine • v0.1 Specification • Source-attributed coordination</p>
+        </footer>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    function copyCode(btn, id) {
+      const code = document.getElementById(id).innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        const original = btn.innerText;
+        btn.innerText = 'Copied!';
+        btn.classList.add('bg-emerald-600');
+        setTimeout(() => {
+          btn.innerText = original;
+          btn.classList.remove('bg-emerald-600');
+        }, 1400);
+      });
+    }
+  </script>
+<script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("[data-product-id]");if(!a)return;e.preventDefault();var pid=a.getAttribute("data-product-id");if(pid)parent.postMessage({type:"ecto-artifact-link-click",productId:pid},"*")})})();</script>
+<script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("[data-product-id]");if(!a)return;e.preventDefault();var pid=a.getAttribute("data-product-id");if(pid)parent.postMessage({type:"ecto-artifact-link-click",productId:pid},"*")})})();</script>
+<script>(function(){var loc=location.href.replace(/#.*$/,"");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,}$/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}function isInlineMediaSlotElement(node){return !!(node&&node.getAttribute&&node.getAttribute("data-clippy-inline-media-slot")!==null)}function findInlineMediaSlot(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(isInlineMediaSlotElement(node))return node}return null}function readInlineMediaUrl(node){if(!node)return null;return node.getAttribute&&((node.getAttribute("data-clippy-inline-media-url")||node.getAttribute("data-url")||node.getAttribute("data_url")))||node.href||null}function stripHash(url){return String(url).replace(/#.*$/,"")}function urlsMatch(a,b){if(!a||!b)return false;try{return stripHash(new URL(a,loc).href)===stripHash(new URL(b,loc).href)}catch(_){return stripHash(a)===stripHash(b)}}function isFirstPartyReelUrl(value){try{var url=new URL(value,loc);if(url.protocol!=="https:")return false;var host=url.hostname.toLowerCase();var supported=host==="instagram.com"||host.endsWith(".instagram.com")||host==="facebook.com"||host.endsWith(".facebook.com");return supported&&/\/reels?\//i.test(url.pathname)}catch(_){return false}}function isInlineMediaUrlClick(node,href){var slot=findInlineMediaSlot(node);if(!slot)return false;var slotUrl=readInlineMediaUrl(slot);if(slotUrl)return urlsMatch(href,slotUrl);return isFirstPartyReelUrl(href)}function findDataHref(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(node.getAttribute){var href=node.getAttribute("data-href")||node.getAttribute("data-url");if(href)return{href:href,node:node}}}return null}var nativeOpen=window.open;window.open=function(url){if(parent!==window&&typeof url==="string"&&/^https?:\/\//.test(url)){parent.postMessage({type:"ecto:usercontent-link-click",href:url},"*");return null}return nativeOpen?nativeOpen.apply(window,arguments):null};document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;if(parent===window)return;var a=target.closest?target.closest("a[href]"):null;if(a&&a.href&&/^https?:\/\//.test(a.href)&&a.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(a,a.href))return;var productId=extractProductId(target)||extractProductId(a);if(productId){e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*");return}e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:a.href},"*");return}var dataHref=findDataHref(target);if(dataHref&&/^https?:\/\//.test(dataHref.href)&&dataHref.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(dataHref.node,dataHref.href))return;e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:dataHref.href},"*")}},true)})();</script><script>(function(){var FOCUS_TYPE="ecto:artifact-focus-request";var CLOSE_TYPE="ecto:artifact-close-request";function focusArtifactDocument(){var body=document.body;if(!body)return;try{window.focus();}catch(e){}if(!body.hasAttribute("tabindex"))body.setAttribute("tabindex","-1");try{body.focus({preventScroll:true});}catch(e){try{body.focus();}catch(e2){}}}window.addEventListener("message",function(event){if(event.source!==window.parent)return;var data=event.data;if(!data||typeof data!=="object"||data.type!==FOCUS_TYPE)return;if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",focusArtifactDocument,{once:true});return;}focusArtifactDocument();});window.addEventListener("keydown",function(event){if(event.key!=="Escape")return;window.setTimeout(function(){if(event.defaultPrevented)return;window.parent.postMessage({type:CLOSE_TYPE},"*");},0);});})();</script></body>
+</html>

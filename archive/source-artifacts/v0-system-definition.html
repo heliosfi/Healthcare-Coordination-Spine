@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><style>
+@font-face {
+  font-family: "Optimistic";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("/fonts/OptimisticAI_VF_Optimized.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Optimistic Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/OptimisticMono_W_TextRegular.woff2") format("woff2");
+}
+:where(html) {
+  font-family: "Optimistic", system-ui, sans-serif;
+}
+:where(code, pre, kbd, samp) {
+  font-family: "Optimistic Mono", ui-monospace, monospace;
+}
+</style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Healthcare Coordination Spine — v0 System Definition</title>
+<style>
+  :root {
+    --bg: #f8fafc;
+    --paper: #ffffff;
+    --ink: #0f172a;
+    --muted: #64748b;
+    --line: #e5e7eb;
+    --line-2: #f1f5f9;
+    --slate-100: #f1f5f9;
+    --slate-200: #e2e8f0;
+    --slate-300: #cbd5e1;
+    --slate-600: #475569;
+    --slate-700: #334155;
+    --slate-800: #1e293b;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  main {
+    max-width: 920px;
+    margin: 40px auto;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    box-shadow: 0 1px 2px rgba(15,23,42,0.04), 0 8px 24px rgba(15,23,42,0.04);
+  }
+  header {
+    padding: 56px 48px 32px;
+    border-bottom: 1px solid var(--line);
+  }
+  .eyebrow {
+    font-size: 12px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+  h1 {
+    font-size: 34px;
+    line-height: 1.15;
+    margin: 0 0 12px;
+    font-weight: 750;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .subheader {
+    font-size: 17px;
+    color: var(--slate-600);
+    margin: 0;
+    max-width: 720px;
+  }
+  section {
+    padding: 36px 48px;
+    border-top: 1px solid var(--line-2);
+  }
+  section:first-of-type { border-top: none; }
+  h2 {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: var(--slate-700);
+    font-weight: 700;
+    margin: 0 0 18px;
+  }
+  p {
+    margin: 0 0 14px;
+    color: var(--slate-700);
+    font-size: 15.5px;
+  }
+  ul.bullets {
+    margin: 8px 0 0;
+    padding-left: 18px;
+  }
+  ul.bullets li {
+    margin: 10px 0;
+    color: var(--slate-700);
+    font-size: 15.5px;
+  }
+  ul.bullets li strong { color: var(--ink); font-weight: 600; }
+
+  .rules { display: grid; gap: 10px; margin-top: 16px; }
+  .rule {
+    background: var(--slate-100);
+    border: 1px solid var(--slate-200);
+    border-left: 3px solid var(--slate-600);
+    padding: 12px 14px;
+    border-radius: 0 8px 8px 0;
+    font-size: 14.5px;
+    color: var(--slate-800);
+  }
+  .rule strong {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--ink);
+    margin-right: 6px;
+  }
+
+  /* Flow diagram */
+  .flow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    margin: 26px 0 8px;
+  }
+  .node {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 13px;
+    background: var(--slate-100);
+    border: 1px solid var(--slate-300);
+    color: var(--slate-800);
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-weight: 550;
+    letter-spacing: .02em;
+    white-space: nowrap;
+  }
+  .arrow {
+    color: #94a3b8;
+    font-size: 18px;
+    line-height: 1;
+    margin: 1px 0;
+    user-select: none;
+  }
+  .split {
+    width: 100%;
+    max-width: 760px;
+    margin: 10px 0;
+  }
+  .split-branches {
+    display: grid;
+    grid-template-columns: 1fr 1.35fr;
+    gap: 28px;
+    align-items: start;
+    position: relative;
+  }
+  .split-branches::before {
+    content: "";
+    position: absolute;
+    top: -8px;
+    left: 18%;
+    right: 32%;
+    height: 2px;
+    background: var(--slate-300);
+  }
+  .branch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    background: #fbfdff;
+    border: 1px dashed #d9e2ec;
+    border-radius: 12px;
+    padding: 14px 12px 16px;
+    min-height: 100%;
+  }
+  .branch-tag {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--slate-700);
+    background: var(--slate-200);
+    padding: 4px 8px;
+    border-radius: 6px;
+    letter-spacing: .02em;
+  }
+  .sub-branches {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 4px;
+  }
+  .sub {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 11.5px;
+    background: #fff;
+    border: 1px solid var(--slate-200);
+    padding: 6px 8px;
+    border-radius: 6px;
+    color: var(--slate-600);
+    text-align: center;
+  }
+  .sub.strong {
+    border-color: #94a3b8;
+    background: var(--slate-100);
+    color: var(--slate-800);
+    font-weight: 600;
+  }
+  .loop-note {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+    text-align: center;
+  }
+
+  /* Coordination object card */
+  .card {
+    border: 1px solid #d1d5db;
+    border-radius: 12px;
+    overflow: hidden;
+    max-width: 560px;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(0,0,0,.03);
+    margin: 18px 0 6px;
+  }
+  .card-header {
+    padding: 10px 14px;
+    background: var(--slate-100);
+    border-bottom: 1px solid var(--slate-200);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    font-weight: 700;
+    color: var(--slate-700);
+  }
+  .card-row {
+    display: grid;
+    grid-template-columns: 190px 1fr;
+    gap: 12px;
+    padding: 10px 14px;
+    border-top: 1px solid var(--line-2);
+    font-size: 14px;
+  }
+  .card-row:first-of-type { border-top: none; }
+  .card-row .label {
+    color: var(--muted);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    font-weight: 600;
+  }
+  .card-row code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 13.5px;
+    color: var(--ink);
+    background: transparent;
+  }
+  .bad-example {
+    margin-top: 18px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .bad-label {
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    font-weight: 600;
+  }
+  .bad {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 13px;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+    padding: 6px 10px;
+    border-radius: 6px;
+  }
+
+  /* Table */
+  .matrix-wrap { overflow-x: auto; }
+  .matrix {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid var(--slate-200);
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: 14px;
+    min-width: 720px;
+    background: #fff;
+  }
+  .matrix th {
+    text-align: left;
+    background: #f8fafc;
+    color: var(--slate-600);
+    font-weight: 650;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--slate-200);
+    white-space: nowrap;
+  }
+  .matrix td {
+    padding: 13px 14px;
+    vertical-align: top;
+    color: var(--slate-700);
+    border-bottom: 1px solid var(--line-2);
+    line-height: 1.5;
+  }
+  .matrix tr:last-child td { border-bottom: none; }
+  .matrix tbody tr:nth-child(odd) td { background: #ffffff; }
+  .matrix tbody tr:nth-child(even) td { background: #fcfdff; }
+  .matrix td strong { color: var(--ink); font-weight: 600; }
+
+  .note {
+    background: var(--slate-100);
+    border: 1px solid #dbe2ea;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    color: var(--slate-700);
+    margin-top: 14px;
+  }
+
+  /* Mini flow */
+  .mini-flow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin: 18px 0 4px;
+    padding: 14px;
+    background: #f8fafc;
+    border: 1px solid var(--slate-200);
+    border-radius: 10px;
+    justify-content: center;
+  }
+  .mini-flow code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 13px;
+    background: #fff;
+    border: 1px solid var(--slate-300);
+    padding: 6px 10px;
+    border-radius: 6px;
+    color: var(--slate-800);
+    font-weight: 550;
+  }
+  .mini-flow span { color: #94a3b8; font-size: 18px; }
+
+  /* Arch list */
+  ol.arch {
+    counter-reset: step;
+    list-style: none;
+    padding: 0;
+    margin: 18px 0 0;
+    display: grid;
+    gap: 10px;
+  }
+  ol.arch li {
+    counter-increment: step;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 12px 14px;
+    background: #f8fafc;
+    border: 1px solid var(--slate-200);
+    border-radius: 8px;
+    font-size: 15px;
+    color: var(--slate-700);
+  }
+  ol.arch li::before {
+    content: counter(step);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 12px;
+    background: var(--slate-800);
+    color: #fff;
+    width: 22px;
+    height: 22px;
+    display: grid;
+    place-items: center;
+    border-radius: 6px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  footer {
+    padding: 28px 48px 48px;
+    border-top: 1px solid var(--line);
+    background: #fcfdff;
+  }
+  .footer-note {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 12.5px;
+    color: var(--slate-600);
+    text-align: center;
+    letter-spacing: .01em;
+  }
+
+  /* Responsive */
+  @media (max-width: 760px) {
+    main { margin: 0; border-left: 0; border-right: 0; border-top: 0; box-shadow: none; }
+    header { padding: 40px 22px 28px; }
+    h1 { font-size: 28px; }
+    .subheader { font-size: 15.5px; }
+    section { padding: 30px 22px; }
+    footer { padding: 24px 22px 40px; }
+    .split-branches { grid-template-columns: 1fr; gap: 16px; }
+    .split-branches::before { display: none; }
+    .card-row { grid-template-columns: 1fr; gap: 4px; padding: 10px 12px; }
+    .matrix { min-width: 0; border: none; background: transparent; }
+    .matrix thead { display: none; }
+    .matrix, .matrix tbody, .matrix tr, .matrix td { display: block; width: 100%; }
+    .matrix tr {
+      border: 1px solid var(--slate-200);
+      border-radius: 10px;
+      margin-bottom: 14px;
+      overflow: hidden;
+      background: #fff;
+    }
+    .matrix td {
+      border: none;
+      border-bottom: 1px solid var(--line-2);
+      padding: 10px 14px;
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 10px;
+      background: #fff !important;
+    }
+    .matrix td:last-child { border-bottom: none; }
+    .matrix td::before {
+      content: attr(data-label);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--muted);
+      font-weight: 600;
+      padding-top: 2px;
+    }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="eyebrow">v0 System Definition</div>
+    <h1>Healthcare Coordination Spine</h1>
+    <p class="subheader">Freeze the concept before code. One bounded workflow, four authority domains, one coordination state.</p>
+  </header>
+
+  <section id="purpose">
+    <h2>1. Purpose</h2>
+    <p>Make the product do one thing clearly before APIs, vendors, HIPAA implementation, or UI spread the scope.</p>
+  </section>
+
+  <section id="boundaries">
+    <h2>2. Boundaries (locked for v0)</h2>
+    <ul class="bullets">
+      <li><strong>Primary problem:</strong> patients, doctors, pharmacies, and insurers can each hold valid information while still being out of sync about the current care state.</li>
+      <li><strong>First use case:</strong> prescription coordination.</li>
+      <li><strong>Core question:</strong> Where is the prescription, what is blocking it, and who is responsible for the next action?</li>
+      <li><strong>System role:</strong> coordinate authoritative information; do not replace the EHR, pharmacy system, insurer, or clinician.</li>
+    </ul>
+    <div class="rules">
+      <div class="rule"><strong>Governance rule:</strong> access does not create authority.</div>
+      <div class="rule"><strong>Safety rule:</strong> the system may explain or route information, but it does not independently diagnose, prescribe, discontinue medication, or reinterpret a clinician's order.</div>
+      <div class="rule"><strong>Evidence rule:</strong> every consequential state must identify its source, timestamp, responsible organization, and whether it is verified, disputed, pending, or unknown.</div>
+    </div>
+  </section>
+
+  <section id="state-model">
+    <h2>3. First-state model — Prescription Coordination</h2>
+    <div class="flow" aria-label="Prescription coordination state flow">
+      <div class="node">PRESCRIBED</div>
+      <div class="arrow">↓</div>
+      <div class="node">PRESCRIPTION_RECEIVED</div>
+      <div class="arrow">↓</div>
+      <div class="node">COVERAGE_CHECK</div>
+      <div class="arrow">↓</div>
+
+      <div class="split">
+        <div class="split-branches">
+          <div class="branch">
+            <div class="branch-tag">PA_NOT_REQUIRED</div>
+            <div class="arrow">↓</div>
+            <div class="loop-note">continues</div>
+          </div>
+          <div class="branch">
+            <div class="branch-tag">PA_REQUIRED</div>
+            <div class="arrow">↓</div>
+            <div class="node">PA_SUBMITTED</div>
+            <div class="arrow">↓</div>
+            <div class="node">PAYER_REVIEW</div>
+            <div class="sub-branches">
+              <div class="sub">NEEDS_INFORMATION → PROVIDER_ACTION → back to PAYER_REVIEW</div>
+              <div class="sub">DENIED → REVIEW PATH</div>
+              <div class="sub strong">APPROVED → continues</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="arrow">↓</div>
+      <div class="node">PHARMACY_PROCESSING</div>
+      <div class="arrow">↓</div>
+      <div class="node">READY</div>
+      <div class="arrow">↓</div>
+      <div class="node">DISPENSED</div>
+      <div class="arrow">↓</div>
+      <div class="node">PATIENT_RECEIPT_KNOWN?</div>
+      <div class="arrow">↓</div>
+      <div class="node">FOLLOW-UP</div>
+    </div>
+  </section>
+
+  <section id="mvo">
+    <h2>4. Minimum viable coordination object</h2>
+    <p>Every node carries four separate fields, not just a status string.</p>
+
+    <div class="card">
+      <div class="card-header">Coordination Node Example</div>
+      <div class="card-row">
+        <div class="label">STATUS</div>
+        <div><code>NEEDS_INFORMATION</code></div>
+      </div>
+      <div class="card-row">
+        <div class="label">SOURCE</div>
+        <div><code>Health Plan X</code></div>
+      </div>
+      <div class="card-row">
+        <div class="label">RESPONSIBLE_ACTOR</div>
+        <div><code>Prescribing provider</code></div>
+      </div>
+      <div class="card-row">
+        <div class="label">NEXT_REQUIRED_ACTION</div>
+        <div><code>Submit requested supporting documentation</code></div>
+      </div>
+      <div class="card-row">
+        <div class="label">PATIENT_ACTION</div>
+        <div><code>None</code></div>
+      </div>
+      <div class="card-row">
+        <div class="label">LAST_UPDATED</div>
+        <div><code>2026-10-03 08:42 EDT</code></div>
+      </div>
+      <div class="card-row">
+        <div class="label">CONFIDENCE</div>
+        <div><code>Source-confirmed</code></div>
+      </div>
+    </div>
+
+    <div class="bad-example">
+      <span class="bad-label">Contrast with bad example:</span>
+      <span class="bad">“Prior authorization: pending”</span>
+    </div>
+  </section>
+
+  <section id="authority">
+    <h2>5. Authority matrix</h2>
+    <div class="matrix-wrap">
+      <table class="matrix">
+        <thead>
+          <tr>
+            <th>Actor</th>
+            <th>Can originate</th>
+            <th>Can update</th>
+            <th>Can view as needed</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-label="Actor"><strong>Patient</strong></td>
+            <td data-label="Can originate">consent, preferences, patient-reported information</td>
+            <td data-label="Can update">own inputs</td>
+            <td data-label="Can view as needed">permitted care/coverage state</td>
+          </tr>
+          <tr>
+            <td data-label="Actor"><strong>Doctor</strong></td>
+            <td data-label="Can originate">orders, diagnosis, clinical documentation</td>
+            <td data-label="Can update">clinical objects they control</td>
+            <td data-label="Can view as needed">relevant patient/coverage/pharmacy status</td>
+          </tr>
+          <tr>
+            <td data-label="Actor"><strong>Pharmacy</strong></td>
+            <td data-label="Can originate">dispense/fulfillment state</td>
+            <td data-label="Can update">pharmacy-controlled events</td>
+            <td data-label="Can view as needed">prescription + required coverage information</td>
+          </tr>
+          <tr>
+            <td data-label="Actor"><strong>Insurer</strong></td>
+            <td data-label="Can originate">coverage, PA, claim state</td>
+            <td data-label="Can update">payer-controlled decisions</td>
+            <td data-label="Can view as needed">information needed for covered workflow</td>
+          </tr>
+          <tr>
+            <td data-label="Actor"><strong>Coordination Spine</strong></td>
+            <td data-label="Can originate">workflow state, provenance, alerts</td>
+            <td data-label="Can update">coordination metadata</td>
+            <td data-label="Can view as needed">referenced source data only as authorized</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note">The Spine must not overwrite the authoritative source just because systems disagree.</div>
+  </section>
+
+  <section id="conflict">
+    <h2>6. Conflict becomes a state</h2>
+    <p>Disagreement is not an error to hide — it is a coordination state to manage.</p>
+    <div class="mini-flow">
+      <code>CONFLICT_DETECTED</code>
+      <span>→</span>
+      <code>HOLD</code>
+      <span>→</span>
+      <code>SOURCE_RECONCILIATION</code>
+      <span>→</span>
+      <code>VERIFIED_STATE</code>
+    </div>
+  </section>
+
+  <section id="architecture">
+    <h2>7. Architectural order (after freeze)</h2>
+    <ol class="arch">
+      <li>data model</li>
+      <li>authority/consent contract</li>
+      <li>event/state machine</li>
+      <li>audit/provenance contract</li>
+      <li>UI</li>
+      <li>integration adapters</li>
+    </ol>
+  </section>
+
+  <section id="out-of-scope">
+    <h2>8. Out of scope for core v0</h2>
+    <ul class="bullets">
+      <li>Keep FHIR, TEFCA, payer APIs, and NCPDP outside the core as adapters, so coordination logic doesn't become dependent on one transport standard.</li>
+    </ul>
+  </section>
+
+  <footer>
+    <div class="footer-note">One bounded workflow, four authority domains, one coordination state, and no invented medical authority.</div>
+  </footer>
+</main>
+<script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("[data-product-id]");if(!a)return;e.preventDefault();var pid=a.getAttribute("data-product-id");if(pid)parent.postMessage({type:"ecto-artifact-link-click",productId:pid},"*")})})();</script>
+<script>(function(){var loc=location.href.replace(/#.*$/,"");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,}$/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}function isInlineMediaSlotElement(node){return !!(node&&node.getAttribute&&node.getAttribute("data-clippy-inline-media-slot")!==null)}function findInlineMediaSlot(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(isInlineMediaSlotElement(node))return node}return null}function readInlineMediaUrl(node){if(!node)return null;return node.getAttribute&&((node.getAttribute("data-clippy-inline-media-url")||node.getAttribute("data-url")||node.getAttribute("data_url")))||node.href||null}function stripHash(url){return String(url).replace(/#.*$/,"")}function urlsMatch(a,b){if(!a||!b)return false;try{return stripHash(new URL(a,loc).href)===stripHash(new URL(b,loc).href)}catch(_){return stripHash(a)===stripHash(b)}}function isFirstPartyReelUrl(value){try{var url=new URL(value,loc);if(url.protocol!=="https:")return false;var host=url.hostname.toLowerCase();var supported=host==="instagram.com"||host.endsWith(".instagram.com")||host==="facebook.com"||host.endsWith(".facebook.com");return supported&&/\/reels?\//i.test(url.pathname)}catch(_){return false}}function isInlineMediaUrlClick(node,href){var slot=findInlineMediaSlot(node);if(!slot)return false;var slotUrl=readInlineMediaUrl(slot);if(slotUrl)return urlsMatch(href,slotUrl);return isFirstPartyReelUrl(href)}function findDataHref(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(node.getAttribute){var href=node.getAttribute("data-href")||node.getAttribute("data-url");if(href)return{href:href,node:node}}}return null}var nativeOpen=window.open;window.open=function(url){if(parent!==window&&typeof url==="string"&&/^https?:\/\//.test(url)){parent.postMessage({type:"ecto:usercontent-link-click",href:url},"*");return null}return nativeOpen?nativeOpen.apply(window,arguments):null};document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;if(parent===window)return;var a=target.closest?target.closest("a[href]"):null;if(a&&a.href&&/^https?:\/\//.test(a.href)&&a.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(a,a.href))return;var productId=extractProductId(target)||extractProductId(a);if(productId){e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*");return}e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:a.href},"*");return}var dataHref=findDataHref(target);if(dataHref&&/^https?:\/\//.test(dataHref.href)&&dataHref.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(dataHref.node,dataHref.href))return;e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:dataHref.href},"*")}},true)})();</script><script>(function(){var FOCUS_TYPE="ecto:artifact-focus-request";var CLOSE_TYPE="ecto:artifact-close-request";function focusArtifactDocument(){var body=document.body;if(!body)return;try{window.focus();}catch(e){}if(!body.hasAttribute("tabindex"))body.setAttribute("tabindex","-1");try{body.focus({preventScroll:true});}catch(e){try{body.focus();}catch(e2){}}}window.addEventListener("message",function(event){if(event.source!==window.parent)return;var data=event.data;if(!data||typeof data!=="object"||data.type!==FOCUS_TYPE)return;if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",focusArtifactDocument,{once:true});return;}focusArtifactDocument();});window.addEventListener("keydown",function(event){if(event.key!=="Escape")return;window.setTimeout(function(){if(event.defaultPrevented)return;window.parent.postMessage({type:CLOSE_TYPE},"*");},0);});})();</script></body>
+</html>
