@@ -12,6 +12,7 @@ This repository import is documentation-only. Specification language such as MUS
 |---|---|---|
 | Uploaded Healthcare Coordination Spine — v0 System Definition.html | [Original HTML](../archive/source-artifacts/v0-system-definition.html) | Byte-preserved; readable transcription in specifications |
 | Uploaded Healthcare Coordination Spine — v0.1 Data Model.html | [Original HTML](../archive/source-artifacts/v0.1-data-model.html) | Byte-preserved; readable specification adds subsequently authorized closure completion |
+| Uploaded Healthcare Coordination Spine — v0.1 Audit & Provenance Contract.html | [Original HTML](../archive/source-artifacts/v0.1-audit-provenance-contract.html) and [readable draft](specifications/v0.1-audit-provenance-contract.md) | Byte-preserved source; imported draft, not ratified or implemented |
 | Supplied conversation: closure criteria and authorization to continue | [Data-model closure section](specifications/v0.1-data-model.md#7-authorized-closure-completion) | Explicit completion; not misrepresented as already present in uploaded HTML |
 | Supplied conversation: Authority & Consent Contract, sections 1–15 | [Authority contract](specifications/v0.1-authority-consent-contract.md) | Repository transcription with listed clarifications |
 | Supplied conversation: State-Transition Contract, sections 1–22 | [Transition contract](specifications/v0.1-state-transition-contract.md) | Repository transcription with listed consistency corrections |
@@ -54,7 +55,7 @@ These are documentation consistency corrections, not new runtime behavior. They 
 | Data model | Preserved HTML plus authorized closure completion in readable baseline |
 | Authority / consent | Design contract; no policy engine or verified live actor bindings |
 | Transition logic | Table, guards, conceptual decision objects and examples; no implementation |
-| Audit / provenance | Requirements referenced; full contract pending |
+| Audit / provenance | Uploaded draft preserved and transcribed; cross-contract reconciliation and ratification pending |
 | Integration adapters | Illustrative mapping only; contracts and implementations pending |
 | Runtime / UI | Not implemented in this import |
 | Clinical, institutional, regulatory or vendor validation | Not established by these materials |
@@ -63,4 +64,28 @@ Before implementation, specify event identity and collision handling; ordering/e
 
 Optional receipt and follow-up bypass edges, approval shortcuts, denial/reversal routes, reopening, and post-closure correction policies remain unresolved. The successful-path table must not silently supply them. An unresolved policy or missing required evidence fails closed.
 
-The **smallest next artifact is the Audit & Provenance Contract**. No further implementation or new vendor scope is included in this repository import.
+The **smallest next step is reconciliation of the imported Audit & Provenance draft** with the existing contracts. No runtime implementation or new vendor scope is included in this repository import.
+
+## Audit & Provenance draft import 2026-10-03
+
+The user instructed “Drop this in the repo too.” The uploaded HTML is preserved unchanged, linked from the README, and transcribed into readable Markdown. Its status is **Draft for Implementation**, with “Immutable once ratified” in the source footer. Import authorization does not ratify the draft or override the existing authority/consent, conflict, duplicate, or closure rules.
+
+The source displays “Last updated: 2026-01-04.” That is the artifact's displayed date, distinct from the verified repository import date; its accuracy and provenance are not established by this import.
+
+The following are repository-editor observations, not silent changes to the source:
+
+| Draft issue | Required reconciliation before implementation |
+|---|---|
+| DUPLICATE_EVENT is required by duplicate handling but missing from AuditEvent.action_type | Complete the action vocabulary while preserving the transition contract's duplicate REJECT/no-state-change outcome |
+| AuditEvent.decision contains ALLOW/DENY/HOLD only | Represent authorization and transition results separately; do not recast PROMOTE/REJECT as authorization decisions |
+| Pipe-delimited idempotency inputs lack escaping or length framing | Define an injective canonical encoding and reject incompatible content under the same source identity |
+| “Canonical JSON” and hash chaining lack exact bytes, full-record hash definition, algorithm encoding, chain scope, and verification anchor | Specify canonical serialization and chain verification; SHA-256 alone does not establish authenticated origin or a functioning tamper-evident log |
+| Ordering prioritizes source timestamps, references a sequence field absent from SpineEvent, and treats previous_event_hash as causality | Define source sequence/effective-time semantics, policy versions, and causal references separately from append-log order; unresolved ordering remains HOLD |
+| REVOKED uses previous_event_hash to reference an arbitrary original | Separate chain predecessor from corrects/revokes references; define authorized revocation events and valid transitions rather than silently adding runtime behavior |
+| Full-payload retention, seven-year minimum, and no-hard-delete assertions lack an established applicable policy basis | Resolve permitted retention, access, redaction, and deletion requirements; source wording is a draft proposal, not a verified legal rule or authorization to retain denied payloads |
+| Source says the contract operates after transitions but requires audit records for authorization DENY/HOLD | Audit authorization outcomes even when transition evaluation never occurs, under permitted storage/access rules |
+| ACTIVE, CLAIM_PAID, and REVOKED examples are outside or undefined by existing prescription/status contracts; Authority omits SPINE coordination events | Define event and state vocabularies and separate external source authority from Spine-authored coordination attestations |
+| Linear provenance edge sketch places prior state after transition decision; “losing” claims are marked superseded despite immutability | Specify reference direction/topology and record reconciliation classification as new metadata rather than rewriting source claims |
+| Historical reconstruction promises replay without defining time basis, policy versions, concurrent ordering, or recovery | Define source-effective versus as-known/promoted history, versioned evaluation, atomic persistence, and determinism before claiming replay capability |
+
+The existing data-model successful-closure criteria, branch-specific milestones, source-domain boundaries, and last-verified-state preservation remain unchanged. This addition supplies the next draft artifact; it does not establish cryptographic, runtime, clinical, or regulatory verification.

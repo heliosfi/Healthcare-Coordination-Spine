@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><style>
+@font-face {
+  font-family: "Optimistic";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("/fonts/OptimisticAI_VF_Optimized.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Optimistic Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/OptimisticMono_W_TextRegular.woff2") format("woff2");
+}
+:where(html) {
+  font-family: "Optimistic", system-ui, sans-serif;
+}
+:where(code, pre, kbd, samp) {
+  font-family: "Optimistic Mono", ui-monospace, monospace;
+}
+</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare Coordination Spine — v0.1 Audit & Provenance Contract</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            color-scheme: light;
+        }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+        .mono, code, pre, tt {
+            font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+        }
+        .prose h2 {
+            scroll-margin-top: 96px;
+        }
+        .callout {
+            border-left-width: 3px;
+            padding: 1rem 1.25rem;
+            border-radius: 0.5rem;
+        }
+        .code-block {
+            position: relative;
+        }
+        .code-block:hover .copy-btn {
+            opacity: 1;
+        }
+        .copy-btn {
+            opacity: 0;
+            transition: opacity 0.15s;
+        }
+        @media (max-width: 768px) {
+            .copy-btn { opacity: 1; }
+        }
+        /* Custom scrollbar for code */
+        pre::-webkit-scrollbar { height: 6px; }
+        pre::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
+        .toc-link.active {
+            color: #4f46e5;
+            background-color: #eef2ff;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body class="bg-[#FCFD] text-slate-800">
+    <!-- Header -->
+    <header class="sticky top-0 z-40 border-b border-slate-200 bg-white/80 backdrop-blur-lg">
+        <div class="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
+            <div class="flex h-[60px] items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-900 text-white">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                        </svg>
+                    </div>
+                    <div class="hidden sm:block">
+                        <div class="text-[13px] font-medium leading-none text-slate-900">Healthcare Coordination Spine</div>
+                        <div class="text-[11px] text-slate-500">Technical Specification</div>
+                    </div>
+                <div class="flex items-center gap-2">
+                    <span class="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-800">
+                        <span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span>
+                        v0.1 Draft
+                    </span>
+                    <span class="inline-flex items-center rounded-full border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-600">Audit & Provenance</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
+        <div class="lg:flex lg:gap-12 xl:gap-16">
+            <!-- Sidebar TOC -->
+            <aside class="hidden lg:block w-[240px] shrink-0">
+                <div class="sticky top-[72px] h-[calc(100vh-80px)] overflow-y-auto py-8 pr-4">
+                    <nav class="space-y-6">
+                        <div>
+                            <h4 class="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Contract</h4>
+                            <ul class="space-y-1 text-[13px]" id="toc">
+                                <li><a href="#purpose" class="toc-link block rounded-md px-2.5 py-1.5 text-slate-600 hover:bg-slate-100">1. Purpose</a></li>
+                                <li><a href="#principles" class="toc-link block rounded-md px-2.5 py-1.5 text-slate-600 hover:bg-slate-100">2. Core Principles</a></li>
+                                <li><a href="#identity" class="toc-link block rounded-md px-2.5 py-1.5 text-slate-600 hover:bg-slate-100">3. Event Identity</a></li>
+                                <li><a href="#ordering" class="toc-link block rounded-md px-2.5 py-1.5 text-slate-600 hover:bg-slate-100">4. Ordering</a></li>
+                                <li><a href="#provenance" class="toc-link block rounded-md px-2.5 py-1.5 text-slate-600 hover:bg-slate-100">5. Provenance Graph</a></li>
+                                <li><a href="#retention" class="toc-link block rounded-md px-2.5 py-1.5 text-slate-600 hover:bg-slate-100">6. What Must Be Retained</a></li>
+                                <li><a href="#duplicate" class="toc-link block rounded-md px-2.5 py-1.5 text-slate-600 hover:bg-slate-100">7. Duplicate Detection</a></li>
+                                <li><a href="#conflict" class="toc-link block rounded-md px-2.5 py-1.5 text-slate-600 hover:bg-slate-100">8. Conflict Evidence</a></li>
+                                <li><a href="#closure" class="toc-link block rounded-md px-2.5 py-1.5 text-slate-600 hover:bg-slate-100">9. Closure Evidence</a></li>
+                                <li><a href="#audit" class="toc-link block rounded-md px-2.5 py-1.5 text-slate-600 hover:bg-slate-100">10. Audit Event</a></li>
+                                <li><a href="#immutability" class="toc-link block rounded-md px-2.5 py-1.5 text-slate-600 hover:bg-slate-100">11. Immutability</a></li>
+                                <li><a href="#reconstruct" class="toc-link block rounded-md px-2.5 py-1.5 text-slate-600 hover:bg-slate-100">12. Reconstructability</a></li>
+                                <li><a href="#query" class="toc-link block rounded-md px-2.5 py-1.5 text-slate-600 hover:bg-slate-100">13. Query Interface</a></li>
+                                <li><a href="#integration" class="toc-link block rounded-md px-2.5 py-1.5 text-slate-600 hover:bg-slate-100">14. Integration</a></li>
+                                <li><a href="#invariants" class="toc-link block rounded-md px-2.5 py-1.5 text-slate-600 hover:bg-slate-100">15. Invariants</a></li>
+                            </ul>
+                        </div>
+                        <div class="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                            <div class="text-[11px] font-medium text-slate-700">Operates After</div>
+                            <div class="mt-1 text-[12px] text-slate-600">State-Transition Contract v0.1</div>
+                        </div>
+                    </nav>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="min-w-0 flex-1 py-8 lg:py-12">
+                <div class="max-w-3xl">
+                    <!-- Title -->
+                    <div class="mb-10">
+                        <div class="mb-3 flex flex-wrap items-center gap-2">
+                            <span class="inline-flex items-center gap-1.5 rounded-md bg-indigo-600/10 px-2 py-1 text-[11px] font-medium uppercase tracking-wide text-indigo-700 ring-1 ring-inset ring-indigo-600/20">Contract</span>
+                            <span class="text-xs text-slate-500">Last updated: 2026-01-04</span>
+                        </div>
+                        <h1 class="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">v0.1 Audit & Provenance Contract</h1>
+                        <p class="mt-3 text-lg leading-relaxed text-slate-600">Immutable event identity, ordering, and evidence retention for PROMOTE, REJECT, and HOLD</p>
+                    </div>
+
+                    <!-- Mobile TOC -->
+                    <div class="mb-8 lg:hidden">
+                        <details class="group rounded-xl border border-slate-200 bg-white">
+                            <summary class="flex cursor-pointer list-none items-center justify-between px-4 py-3">
+                                <span class="text-sm font-medium text-slate-700">On this page</span>
+                                <svg class="h-4 w-4 text-slate-500 transition group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </summary>
+                            <div class="border-t border-slate-100 px-4 py-3 text-sm">
+                                <a href="#purpose" class="block py-1 text-slate-600">1. Purpose</a>
+                                <a href="#identity" class="block py-1 text-slate-600">3. Event Identity</a>
+                                <a href="#retention" class="block py-1 text-slate-600">6. Retention</a>
+                                <a href="#audit" class="block py-1 text-slate-600">10. Audit Event</a>
+                            </div>
+                        </details>
+                    </div>
+
+                    <article class="prose prose-slate max-w-none prose-h2:text-[22px] prose-h2:font-semibold prose-h2:tracking-tight prose-h2:mt-12 prose-h2:mb-4 prose-h3:text-[16px] prose-p:leading-7 prose-li:leading-7">
+                        
+                        <!-- 1 Purpose -->
+                        <section id="purpose">
+                            <h2>1. Purpose</h2>
+                            <p>Defines what must be recorded, retained, and made attributable for every consequential operation in the Spine. Ensures provenance is preserved, conflicts are auditable, and no source data is silently overwritten. Operates after State-Transition Contract.</p>
+                            <div class="not-prose mt-4 grid gap-3 sm:grid-cols-3">
+                                <div class="rounded-lg border border-slate-200 bg-white p-3">
+                                    <div class="text-[11px] font-medium uppercase tracking-wide text-slate-500">Input</div>
+                                    <div class="mt-1 text-sm font-medium text-slate-800">Authorized Events</div>
+                                </div>
+                                <div class="rounded-lg border border-slate-200 bg-white p-3">
+                                    <div class="text-[11px] font-medium uppercase tracking-wide text-slate-500">Process</div>
+                                    <div class="mt-1 text-sm font-medium text-slate-800">PROMOTE / REJECT / HOLD</div>
+                                </div>
+                                <div class="rounded-lg border border-slate-200 bg-white p-3">
+                                    <div class="text-[11px] font-medium uppercase tracking-wide text-slate-500">Output</div>
+                                    <div class="mt-1 text-sm font-medium text-slate-800">Immutable Audit Trail</div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- 2 Core Principles -->
+                        <section id="principles">
+                            <h2>2. Core Principles</h2>
+                            <ul class="not-prose mt-4 space-y-2">
+                                <li class="flex gap-3 rounded-lg border border-slate-200 bg-white p-3">
+                                    <svg class="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    <div><span class="font-medium text-slate-900">Every event is immutable once accepted</span><div class="text-sm text-slate-600">No updates, only new events</div></div>
+                                </li>
+                                <li class="flex gap-3 rounded-lg border border-slate-200 bg-white p-3">
+                                    <svg class="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    <div><span class="font-medium text-slate-900">Provenance is append-only</span><div class="text-sm text-slate-600">History grows, never shrinks</div></div>
+                                </li>
+                                <li class="flex gap-3 rounded-lg border border-slate-200 bg-white p-3">
+                                    <svg class="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    <div><span class="font-medium text-slate-900">Source authority is preserved</span><div class="text-sm text-slate-600">Original system attribution maintained</div></div>
+                                </li>
+                                <li class="flex gap-3 rounded-lg border border-slate-200 bg-white p-3">
+                                    <svg class="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    <div><span class="font-medium text-slate-900">Rejected and held events are auditable</span><div class="text-sm text-slate-600">DENY and HOLD emit full audit records</div></div>
+                                </li>
+                                <li class="flex gap-3 rounded-lg border border-slate-200 bg-white p-3">
+                                    <svg class="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    <div><span class="font-medium text-slate-900">No silent overwrites</span><div class="text-sm text-slate-600">Conflicts preserve both claims</div></div>
+                                </li>
+                                <li class="flex gap-3 rounded-lg border border-slate-200 bg-white p-3">
+                                    <svg class="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    <div><span class="font-medium text-slate-900">Audit trail enables reconstruction</span><div class="text-sm text-slate-600">Any state at any time is replayable</div></div>
+                                </li>
+                            </ul>
+                        </section>
+
+                        <!-- 3 Event Identity -->
+                        <section id="identity">
+                            <h2>3. Event Identity</h2>
+                            <p>Define immutable Event record. <code>event_id</code> is assigned by Spine on first receipt, <code>source_event_id</code> preserved from origin. Hash chain ensures tamper-evidence.</p>
+                            
+                            <div class="not-prose code-block">
+                                <button class="copy-btn absolute right-2 top-2 rounded bg-slate-800/80 px-2 py-1 text-[11px] text-white backdrop-blur" data-copy="event-struct">Copy</button>
+                                <pre id="event-struct" class="overflow-x-auto rounded-xl bg-slate-950 p-4 text-[12.5px] leading-6 text-slate-100"><code>interface SpineEvent {
+  event_id: string;            // UUID v7, assigned by Spine on first receipt
+  coordination_id: string;     // Coordination instance
+  source_system: string;       // e.g., "epic.prescriber", "surescripts"
+  source_event_id: string;     // Preserved from origin, never modified
+  source_authority: Authority; // PRESCRIBER | PHARMACY | PAYER | PATIENT
+  event_type: EventType;       // PRESCRIBED, DISPENSED, CLAIM_PAID, etc.
+  actor_id: string;
+  actor_role: string;
+  timestamp: string;           // RFC3339 source timestamp
+  received_at: string;         // RFC3339 Spine ingest time
+  payload_hash: string;        // SHA-256 of canonical content
+  previous_event_hash: string | null; // Tamper-evident chain
+  content: object;             // Canonical JSON, normalized
+}</code></pre>
+                            </div>
+
+                            <div class="not-prose mt-4 callout border-amber-500 bg-amber-50/70 text-amber-900">
+                                <div class="flex gap-2.5">
+                                    <svg class="mt-0.5 h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                                    <div class="text-[13px] leading-6"><strong>Immutability:</strong> Once <code class="mono bg-amber-100 px-1 rounded">event_id</code> is assigned, the entire record is write-once. Corrections arrive as new events with their own <code class="mono bg-amber-100 px-1 rounded">source_event_id</code> referencing the original.</div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- 4 Ordering -->
+                        <section id="ordering">
+                            <h2>4. Ordering</h2>
+                            <p>Events may arrive out of order. Ordering determined by: source timestamp, source sequence number if provided, received_at, and causal links via previous_event_hash. Define that current_state is derived from ordered, authorized, promoted events only.</p>
+                            
+                            <div class="not-prose mt-4 overflow-hidden rounded-xl border border-slate-200">
+                                <div class="bg-slate-50 px-4 py-2 text-[11px] font-semibold uppercase tracking-wide text-slate-600">Ordering Precedence</div>
+                                <ol class="divide-y divide-slate-100 bg-white text-sm">
+                                    <li class="flex items-center gap-3 px-4 py-3"><span class="flex h-6 w-6 items-center justify-center rounded-full bg-slate-900 text-xs font-medium text-white">1</span><div><span class="font-medium">source.timestamp</span><span class="ml-2 text-slate-500">Primary clinical time</span></div></li>
+                                    <li class="flex items-center gap-3 px-4 py-3"><span class="flex h-6 w-6 items-center justify-center rounded-full bg-slate-900 text-xs font-medium text-white">2</span><div><span class="font-medium">source.sequence_number</span><span class="ml-2 text-slate-500">If provided by origin</span></div></li>
+                                    <li class="flex items-center gap-3 px-4 py-3"><span class="flex h-6 w-6 items-center justify-center rounded-full bg-slate-900 text-xs font-medium text-white">3</span><div><span class="font-medium">previous_event_hash</span><span class="ml-2 text-slate-500">Causal link</span></div></li>
+                                    <li class="flex items-center gap-3 px-4 py-3"><span class="flex h-6 w-6 items-center justify-center rounded-full bg-slate-900 text-xs font-medium text-white">4</span><div><span class="font-medium">received_at</span><span class="ml-2 text-slate-500">Spine ingest tiebreaker</span></div></li>
+                                </ol>
+                            </div>
+                            <p class="mt-4"><strong>current_state</strong> is the fold of all <em>ordered, authorized, and promoted</em> events. REJECTED and HELD events never contribute to state.</p>
+                        </section>
+
+                        <!-- 5 Provenance -->
+                        <section id="provenance">
+                            <h2>5. Provenance Graph</h2>
+                            <p>Every state promotion references: triggering event_ref, authorization_decision_ref, transition_decision_ref, prior_state_ref, resulting_state_ref. Show that provenance forms a directed acyclic graph linking source events to coordination states.</p>
+                            
+                            <div class="not-prose mt-4 rounded-xl border border-slate-200 bg-white p-5">
+                                <div class="flex flex-col items-center gap-4 md:flex-row md:justify-between">
+                                    <div class="w-full md:w-auto">
+                                        <div class="text-[11px] font-medium uppercase tracking-wide text-slate-500 mb-2">Source Layer</div>
+                                        <div class="flex flex-wrap gap-2">
+                                            <div class="rounded-lg border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-medium text-indigo-800">event:PRESCRIBED</div>
+                                            <div class="rounded-lg border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-medium text-indigo-800">event:DISPENSED</div>
+                                        </div>
+                                    </div>
+                                    <svg class="hidden h-5 w-5 text-slate-400 md:block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                                    <div class="w-full md:w-auto">
+                                        <div class="text-[11px] font-medium uppercase tracking-wide text-slate-500 mb-2">Decision Layer</div>
+                                        <div class="flex flex-wrap gap-2">
+                                            <div class="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-medium text-amber-800">authz_decision</div>
+                                            <div class="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-medium text-amber-800">transition_decision</div>
+                                        </div>
+                                    <svg class="hidden h-5 w-5 text-slate-400 md:block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                                    <div class="w-full md:w-auto">
+                                        <div class="text-[11px] font-medium uppercase tracking-wide text-slate-500 mb-2">State Layer</div>
+                                        <div class="flex flex-wrap gap-2">
+                                            <div class="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-medium text-emerald-800">state:ACTIVE</div>
+                                        </div>
+                                    </div>
+                                <div class="mt-4 border-t border-slate-100 pt-4 text-[12px] text-slate-600">DAG edges: event_ref → authorization_decision_ref → transition_decision_ref → prior_state_ref → resulting_state_ref</div>
+                            </div>
+                        </section>
+
+                        <!-- 6 Retention -->
+                        <section id="retention">
+                            <h2>6. What Must Be Retained</h2>
+                            
+                            <div class="not-prose mt-4">
+                                <div class="flex gap-1 rounded-lg bg-slate-100 p-1">
+                                    <button data-tab="promote" class="tab-btn flex-1 rounded-md px-3 py-1.5 text-sm font-medium bg-white shadow-sm text-slate-900">PROMOTE</button>
+                                    <button data-tab="reject" class="tab-btn flex-1 rounded-md px-3 py-1.5 text-sm font-medium text-slate-600 hover:text-slate-900">REJECT</button>
+                                    <button data-tab="hold" class="tab-btn flex-1 rounded-md px-3 py-1.5 text-sm font-medium text-slate-600 hover:text-slate-900">HOLD</button>
+                                </div>
+                                
+                                <div id="tab-promote" class="tab-panel mt-3 rounded-xl border border-emerald-200 bg-emerald-50/50 p-4">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <div class="h-2 w-2 rounded-full bg-emerald-600"></div>
+                                        <h3 class="text-sm font-semibold text-emerald-900 m-0">For PROMOTE</h3>
+                                    </div>
+                                    <ul class="mt-2 space-y-1.5 text-[13px] text-slate-700">
+                                        <li class="flex gap-2"><span class="text-emerald-600">•</span> event (full immutable record)</li>
+                                        <li class="flex gap-2"><span class="text-emerald-600">•</span> authorization decision with authority_basis</li>
+                                        <li class="flex gap-2"><span class="text-emerald-600">•</span> transition decision with guard evaluation</li>
+                                        <li class="flex gap-2"><span class="text-emerald-600">•</span> promotion record</li>
+                                        <li class="flex gap-2"><span class="text-emerald-600">•</span> prior and new state snapshots</li>
+                                        <li class="flex gap-2"><span class="text-emerald-600">•</span> responsible_actor change</li>
+                                        <li class="flex gap-2"><span class="text-emerald-600">•</span> provenance_refs (full chain)</li>
+                                    </ul>
+                                </div>
+                                
+                                <div id="tab-reject" class="tab-panel mt-3 hidden rounded-xl border border-red-200 bg-red-50/50 p-4">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <div class="h-2 w-2 rounded-full bg-red-600"></div>
+                                        <h3 class="text-sm font-semibold text-red-900 m-0">For REJECT</h3>
+                                    </div>
+                                    <ul class="mt-2 space-y-1.5 text-[13px] text-slate-700">
+                                        <li class="flex gap-2"><span class="text-red-600">•</span> event (full immutable record)</li>
+                                        <li class="flex gap-2"><span class="text-red-600">•</span> authorization decision</li>
+                                        <li class="flex gap-2"><span class="text-red-600">•</span> transition decision with reason_code</li>
+                                        <li class="flex gap-2"><span class="text-red-600">•</span> attempted from/to state</li>
+                                        <li class="flex gap-2"><span class="text-red-600">•</span> no state change recorded</li>
+                                    </ul>
+                                </div>
+                                
+                                <div id="tab-hold" class="tab-panel mt-3 hidden rounded-xl border border-amber-200 bg-amber-50/50 p-4">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <div class="h-2 w-2 rounded-full bg-amber-600"></div>
+                                        <h3 class="text-sm font-semibold text-amber-900 m-0">For HOLD</h3>
+                                    </div>
+                                    <ul class="mt-2 space-y-1.5 text-[13px] text-slate-700">
+                                        <li class="flex gap-2"><span class="text-amber-600">•</span> event (full immutable record)</li>
+                                        <li class="flex gap-2"><span class="text-amber-600">•</span> authorization decision</li>
+                                        <li class="flex gap-2"><span class="text-amber-600">•</span> transition decision</li>
+                                        <li class="flex gap-2"><span class="text-amber-600">•</span> conflict record if applicable</li>
+                                        <li class="flex gap-2"><span class="text-amber-600">•</span> promotion_blocked flag</li>
+                                        <li class="flex gap-2"><span class="text-amber-600">•</span> unresolved guards</li>
+                                        <li class="flex gap-2"><span class="text-amber-600">•</span> all competing source events</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- 7 Duplicate -->
+                        <section id="duplicate">
+                            <h2>7. Duplicate Detection</h2>
+                            <p>Define idempotency key as hash of source_system + source_event_id + coordination_id + event_type. On duplicate, record DUPLICATE_EVENT audit entry, do not create new state.</p>
+                            <div class="not-prose code-block mt-3">
+                                <pre class="overflow-x-auto rounded-xl bg-slate-950 p-4 text-[12.5px] text-slate-100"><code>idempotency_key = SHA256(
+  source_system + "|" +
+  source_event_id + "|" +
+  coordination_id + "|" +
+  event_type
+)
+
+// On match:
+// → emit AuditEvent(action_type=DUPLICATE_EVENT)
+// → return existing event_id
+// → no new state, no promotion</code></pre>
+                            </div>
+                        </section>
+
+                        <!-- 8 Conflict -->
+                        <section id="conflict">
+                            <h2>8. Conflict Evidence</h2>
+                            <p>When CONFLICT_DETECTED, retain: all conflicting events with full payloads, authority_basis for each, timestamps, reconciliation inputs, winning_source determination, losing sources preserved, resolution timestamp, resolved_by. Losing claims never deleted.</p>
+                            <div class="not-prose mt-3 rounded-xl border border-slate-200 bg-white">
+                                <table class="w-full text-[13px]">
+                                    <thead class="bg-slate-50 text-left text-[11px] uppercase tracking-wide text-slate-500">
+                                        <tr><th class="px-4 py-2 font-medium">Field</th><th class="px-4 py-2 font-medium">Retention Requirement</th></tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-100">
+                                        <tr><td class="px-4 py-2.5 font-mono text-xs">conflicting_events[]</td><td class="px-4 py-2.5">Full payloads, not references</td></tr>
+                                        <tr><td class="px-4 py-2.5 font-mono text-xs">authority_basis[]</td><td class="px-4 py-2.5">Per-event PRESCRIBER vs PHARMACY rationale</td></tr>
+                                        <tr><td class="px-4 py-2.5 font-mono text-xs">winning_source</td><td class="px-4 py-2.5">Determination + timestamp</td></tr>
+                                        <tr><td class="px-4 py-2.5 font-mono text-xs">losing_sources[]</td><td class="px-4 py-2.5 text-red-700 font-medium">Never deleted, marked superseded</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </section>
+
+                        <!-- 9 Closure -->
+                        <section id="closure">
+                            <h2>9. Closure Evidence</h2>
+                            <p>For CLOSED, retain: closure_basis array, all milestone events referenced, follow-up completion evidence, final responsible_actor null, closed_at, closure_reason, full provenance chain from PRESCRIBED to CLOSED.</p>
+                        </section>
+
+                        <!-- 10 Audit -->
+                        <section id="audit">
+                            <h2>10. Audit Event Structure</h2>
+                            <p>Define AuditEvent. Note every decision including DENY and HOLD must emit audit event.</p>
+                            <div class="not-prose code-block">
+                                <button class="copy-btn absolute right-2 top-2 rounded bg-slate-800/80 px-2 py-1 text-[11px] text-white" data-copy="audit-struct">Copy</button>
+                                <pre id="audit-struct" class="overflow-x-auto rounded-xl bg-slate-950 p-4 text-[12.5px] leading-6 text-slate-100"><code>interface AuditEvent {
+  audit_id: string;          // UUID
+  timestamp: string;         // RFC3339
+  actor: string;             // actor_id
+  organization: string;
+  patient_ref: string;       // Pseudonymized
+  action_type: 'EVENT_RECEIVED' | 'AUTHORIZATION_EVALUATED' |
+               'TRANSITION_EVALUATED' | 'STATE_PROMOTED' |
+               'STATE_REJECTED' | 'STATE_HELD' |
+               'CONFLICT_DETECTED' | 'RECONCILIATION_PERFORMED' | 'CLOSED';
+  resource_type: 'SpineEvent' | 'CoordinationState';
+  resource_id: string;
+  decision: 'ALLOW' | 'DENY' | 'HOLD';
+  reason_code: string | null;
+  authority_basis: string | null;
+  consent_basis: string | null;
+  prior_state: string | null;
+  resulting_state: string | null;
+  provenance_refs: string[]; // event_id, decision_ids
+  payload_hash: string;
+}</code></pre>
+                            </div>
+                        </section>
+
+                        <!-- 11 Immutability -->
+                        <section id="immutability">
+                            <h2>11. Immutability and Retention</h2>
+                            <p>Events, decisions, and promotions are immutable. Implement via append-only log with cryptographic hash chaining. Retention period minimum 7 years or per regulatory requirement. No hard delete; revocation recorded as new event.</p>
+                            <div class="not-prose mt-4 callout border-rose-500 bg-rose-50 text-rose-900">
+                                <div class="flex gap-3">
+                                    <svg class="h-5 w-5 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+                                    <div>
+                                        <div class="font-semibold text-[13px]">No Hard Delete</div>
+                                        <div class="mt-1 text-[13px] leading-6">Revocation, correction, or withdrawal must be recorded as a new SpineEvent with event_type='REVOKED' referencing the original via <code class="mono bg-rose-100 px-1 rounded">previous_event_hash</code>. Physical deletion violates this contract.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- 12 Reconstruct -->
+                        <section id="reconstruct">
+                            <h2>12. Reconstructability</h2>
+                            <p>System must be able to reconstruct current_state and any historical state by replaying ordered, promoted events from genesis. Provide function: <code>reconstruct_state(coordination_id, as_of_timestamp)</code>.</p>
+                            <div class="not-prose mt-4 rounded-xl border border-slate-200 bg-white p-4">
+                                <div class="flex items-center justify-between">
+                                    <code class="text-[13px] font-medium">reconstruct_state("coord_abc123", "2025-12-15T14:30:00Z")</code>
+                                    <button id="run-reconstruct" class="rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-slate-800">Run</button>
+                                </div>
+                                <div id="reconstruct-output" class="mt-3 hidden rounded-lg bg-slate-950 p-3 font-mono text-[11px] leading-5 text-emerald-300"></div>
+                            </div>
+                        </section>
+
+                        <!-- 13 Query -->
+                        <section id="query">
+                            <h2>13. Query Interface</h2>
+                            <p>Define required queries:</p>
+                            <div class="not-prose mt-3 grid gap-2 sm:grid-cols-2">
+                                <div class="rounded-lg border border-slate-200 bg-white p-3">
+                                    <div class="font-mono text-xs font-medium text-indigo-700">get_provenance_chain</div>
+                                    <div class="mt-1 text-[12px] text-slate-600">Full DAG for coordination_id</div>
+                                </div>
+                                <div class="rounded-lg border border-slate-200 bg-white p-3">
+                                    <div class="font-mono text-xs font-medium text-indigo-700">get_conflict_history</div>
+                                    <div class="mt-1 text-[12px] text-slate-600">All conflicts + resolutions</div>
+                                </div>
+                                <div class="rounded-lg border border-slate-200 bg-white p-3">
+                                    <div class="font-mono text-xs font-medium text-indigo-700">get_audit_trail</div>
+                                    <div class="mt-1 text-[12px] text-slate-600">Filter by action_type, actor, time</div>
+                                </div>
+                                <div class="rounded-lg border border-slate-200 bg-white p-3">
+                                    <div class="font-mono text-xs font-medium text-indigo-700">get_state_at_time</div>
+                                    <div class="mt-1 text-[12px] text-slate-600">Historical reconstruction</div>
+                                </div>
+                                <div class="rounded-lg border border-slate-200 bg-white p-3 sm:col-span-2">
+                                    <div class="font-mono text-xs font-medium text-indigo-700">get_responsibility_timeline</div>
+                                    <div class="mt-1 text-[12px] text-slate-600">responsible_actor changes with provenance</div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- 14 Integration -->
+                        <section id="integration">
+                            <h2>14. Integration with Previous Contracts</h2>
+                            <p>References v0.1 Data Model (provenance array), Authority & Consent (authorization_decision), State-Transition (transition_decision, promotion). Show flow.</p>
+                            <div class="not-prose mt-4 overflow-x-auto rounded-xl border border-slate-200 bg-slate-50 p-4">
+                                <div class="flex min-w-[600px] items-center gap-3 text-[12px]">
+                                    <div class="rounded bg-white border border-slate-200 px-2.5 py-1.5 shadow-sm">Data Model<br><span class="text-slate-500">provenance[]</span></div>
+                                    <span class="text-slate-400">→</span>
+                                    <div class="rounded bg-white border border-slate-200 px-2.5 py-1.5 shadow-sm">Authority & Consent<br><span class="text-slate-500">authorization_decision</span></div>
+                                    <span class="text-slate-400">→</span>
+                                    <div class="rounded bg-white border border-slate-200 px-2.5 py-1.5 shadow-sm">State-Transition<br><span class="text-slate-500">transition_decision</span></div>
+                                    <span class="text-slate-400">→</span>
+                                    <div class="rounded bg-indigo-600 px-2.5 py-1.5 font-medium text-white shadow-sm">Audit & Provenance<br><span class="text-indigo-200">immutable log</span></div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- 15 Invariants -->
+                        <section id="invariants">
+                            <h2>15. Invariants</h2>
+                            <div class="not-prose mt-3 space-y-2">
+                                <div class="flex items-start gap-3 rounded-lg border border-slate-200 bg-white p-3"><div class="mt-0.5 h-4 w-4 rounded-full border-2 border-emerald-500 flex items-center justify-center"><div class="h-1.5 w-1.5 rounded-full bg-emerald-500"></div></div><div class="text-sm"><strong>No event deletion</strong> — append-only log</div></div>
+                                <div class="flex items-start gap-3 rounded-lg border border-slate-200 bg-white p-3"><div class="mt-0.5 h-4 w-4 rounded-full border-2 border-emerald-500 flex items-center justify-center"><div class="h-1.5 w-1.5 rounded-full bg-emerald-500"></div></div><div class="text-sm"><strong>No silent overwrite</strong> — conflicts preserve both sides</div></div>
+                                <div class="flex items-start gap-3 rounded-lg border border-slate-200 bg-white p-3"><div class="mt-0.5 h-4 w-4 rounded-full border-2 border-emerald-500 flex items-center justify-center"><div class="h-1.5 w-1.5 rounded-full bg-emerald-500"></div></div><div class="text-sm"><strong>Every promotion attributable to source event</strong></div></div>
+                                <div class="flex items-start gap-3 rounded-lg border border-slate-200 bg-white p-3"><div class="mt-0.5 h-4 w-4 rounded-full border-2 border-emerald-500 flex items-center justify-center"><div class="h-1.5 w-1.5 rounded-full bg-emerald-500"></div></div><div class="text-sm"><strong>Every HOLD attributable to unresolved guard</strong></div></div>
+                                <div class="flex items-start gap-3 rounded-lg border border-slate-200 bg-white p-3"><div class="mt-0.5 h-4 w-4 rounded-full border-2 border-emerald-500 flex items-center justify-center"><div class="h-1.5 w-1.5 rounded-full bg-emerald-500"></div></div><div class="text-sm"><strong>Every CLOSED attributable to closure_basis</strong></div></div>
+                                <div class="flex items-start gap-3 rounded-lg border border-slate-200 bg-white p-3"><div class="mt-0.5 h-4 w-4 rounded-full border-2 border-emerald-500 flex items-center justify-center"><div class="h-1.5 w-1.5 rounded-full bg-emerald-500"></div></div><div class="text-sm"><strong>Provenance preserved across conflicts</strong></div></div>
+                                <div class="flex items-start gap-3 rounded-lg border border-slate-200 bg-white p-3"><div class="mt-0.5 h-4 w-4 rounded-full border-2 border-emerald-500 flex items-center justify-center"><div class="h-1.5 w-1.5 rounded-full bg-emerald-500"></div></div><div class="text-sm"><strong>Audit trail complete for all three outcomes</strong> — PROMOTE, REJECT, HOLD</div></div>
+                            </div>
+                        </section>
+
+                        <div class="mt-16 border-t border-slate-200 pt-8">
+                            <div class="flex flex-wrap items-center justify-between gap-4 text-[12px] text-slate-500">
+                                <div>Healthcare Coordination Spine • Audit & Provenance Contract v0.1</div>
+                                <div class="flex items-center gap-3">
+                                    <span>Status: Draft for Implementation</span>
+                                    <span class="h-1 w-1 rounded-full bg-slate-300"></span>
+                                    <span>Immutable once ratified</span>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tab = btn.dataset.tab;
+                document.querySelectorAll('.tab-btn').forEach(b => {
+                    b.classList.remove('bg-white', 'shadow-sm', 'text-slate-900');
+                    b.classList.add('text-slate-600');
+                });
+                btn.classList.add('bg-white', 'shadow-sm', 'text-slate-900');
+                btn.classList.remove('text-slate-600');
+                
+                document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+                document.getElementById('tab-' + tab).classList.remove('hidden');
+            });
+        });
+
+        // Copy buttons
+        document.querySelectorAll('[data-copy]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.getAttribute('data-copy');
+                const el = document.getElementById(id);
+                if (!el) return;
+                const text = el.innerText;
+                navigator.clipboard.writeText(text).then(() => {
+                    const old = btn.textContent;
+                    btn.textContent = 'Copied!';
+                    setTimeout(() => btn.textContent = old, 1200);
+                });
+            });
+        });
+
+        // Reconstruct demo
+        document.getElementById('run-reconstruct')?.addEventListener('click', () => {
+            const out = document.getElementById('reconstruct-output');
+            out.classList.remove('hidden');
+            out.innerHTML = `> loading events for coord_abc123...
+> ordering 7 promoted events (2 rejected, 1 held skipped)
+> replaying from genesis...
+
+[2025-12-01T09:12:00Z] PRESCRIBED → state=PENDING
+[2025-12-01T09:15:22Z] AUTHORIZED → state=ACTIVE
+[2025-12-03T14:02:11Z] DISPENSED → responsible_actor=pharmacy_42
+[2025-12-10T11:30:00Z] CLAIM_SUBMITTED → state=ACTIVE
+[2025-12-15T14:29:58Z] CLAIM_PAID
+
+final state @ 2025-12-15T14:30:00Z:
+{
+  "status": "ACTIVE",
+  "responsible_actor": "payer_7",
+  "provenance_refs": ["evt_01J...", "evt_01K...", "evt_01M..."]
+}`;
+        });
+
+        // TOC active state
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                const id = entry.target.id;
+                const link = document.querySelector(`.toc-link[href="#${id}"]`);
+                if (link) {
+                    if (entry.isIntersecting) {
+                        document.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+                        link.classList.add('active');
+                    }
+                }
+            });
+        }, { rootMargin: '-20% 0px -70% 0px' });
+
+        document.querySelectorAll('section[id]').forEach(sec => observer.observe(sec));
+    </script>
+<script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("[data-product-id]");if(!a)return;e.preventDefault();var pid=a.getAttribute("data-product-id");if(pid)parent.postMessage({type:"ecto-artifact-link-click",productId:pid},"*")})})();</script>
+<script>(function(){var loc=location.href.replace(/#.*$/,"");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,}$/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}function isInlineMediaSlotElement(node){return !!(node&&node.getAttribute&&node.getAttribute("data-clippy-inline-media-slot")!==null)}function findInlineMediaSlot(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(isInlineMediaSlotElement(node))return node}return null}function readInlineMediaUrl(node){if(!node)return null;return node.getAttribute&&((node.getAttribute("data-clippy-inline-media-url")||node.getAttribute("data-url")||node.getAttribute("data_url")))||node.href||null}function stripHash(url){return String(url).replace(/#.*$/,"")}function urlsMatch(a,b){if(!a||!b)return false;try{return stripHash(new URL(a,loc).href)===stripHash(new URL(b,loc).href)}catch(_){return stripHash(a)===stripHash(b)}}function isFirstPartyReelUrl(value){try{var url=new URL(value,loc);if(url.protocol!=="https:")return false;var host=url.hostname.toLowerCase();var supported=host==="instagram.com"||host.endsWith(".instagram.com")||host==="facebook.com"||host.endsWith(".facebook.com");return supported&&/\/reels?\//i.test(url.pathname)}catch(_){return false}}function isInlineMediaUrlClick(node,href){var slot=findInlineMediaSlot(node);if(!slot)return false;var slotUrl=readInlineMediaUrl(slot);if(slotUrl)return urlsMatch(href,slotUrl);return isFirstPartyReelUrl(href)}function findDataHref(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(node.getAttribute){var href=node.getAttribute("data-href")||node.getAttribute("data-url");if(href)return{href:href,node:node}}}return null}var nativeOpen=window.open;window.open=function(url){if(parent!==window&&typeof url==="string"&&/^https?:\/\//.test(url)){parent.postMessage({type:"ecto:usercontent-link-click",href:url},"*");return null}return nativeOpen?nativeOpen.apply(window,arguments):null};document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;if(parent===window)return;var a=target.closest?target.closest("a[href]"):null;if(a&&a.href&&/^https?:\/\//.test(a.href)&&a.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(a,a.href))return;var productId=extractProductId(target)||extractProductId(a);if(productId){e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*");return}e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:a.href},"*");return}var dataHref=findDataHref(target);if(dataHref&&/^https?:\/\//.test(dataHref.href)&&dataHref.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(dataHref.node,dataHref.href))return;e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:dataHref.href},"*")}},true)})();</script><script>(function(){var FOCUS_TYPE="ecto:artifact-focus-request";var CLOSE_TYPE="ecto:artifact-close-request";function focusArtifactDocument(){var body=document.body;if(!body)return;try{window.focus();}catch(e){}if(!body.hasAttribute("tabindex"))body.setAttribute("tabindex","-1");try{body.focus({preventScroll:true});}catch(e){try{body.focus();}catch(e2){}}}window.addEventListener("message",function(event){if(event.source!==window.parent)return;var data=event.data;if(!data||typeof data!=="object"||data.type!==FOCUS_TYPE)return;if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",focusArtifactDocument,{once:true});return;}focusArtifactDocument();});window.addEventListener("keydown",function(event){if(event.key!=="Escape")return;window.setTimeout(function(){if(event.defaultPrevented)return;window.parent.postMessage({type:CLOSE_TYPE},"*");},0);});})();</script></body>
+</html>
