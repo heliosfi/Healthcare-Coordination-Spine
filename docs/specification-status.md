@@ -57,7 +57,7 @@ These are documentation consistency corrections, not new runtime behavior. They 
 | Transition logic | Table, guards, conceptual decision objects and examples; no implementation |
 | Audit / provenance | Uploaded draft preserved and transcribed; cross-contract reconciliation and ratification pending |
 | Integration adapters | Illustrative mapping only; contracts and implementations pending |
-| Runtime / UI | Not implemented in this import |
+| Runtime / UI | Local Python fail-closed reference stubs and synthetic fixtures only; no deployed runtime or UI |
 | Clinical, institutional, regulatory or vendor validation | Not established by these materials |
 
 Before implementation, specify event identity and collision handling; ordering/effective-time rules; state-version/concurrency control; policy versions and decision precedence; atomic audit/promotion/recovery; permitted storage/access/retention; exact action vocabulary and scoped actor bindings; and adapter authentication/delegation evidence.
@@ -89,3 +89,23 @@ The following are repository-editor observations, not silent changes to the sour
 | Historical reconstruction promises replay without defining time basis, policy versions, concurrent ordering, or recovery | Define source-effective versus as-known/promoted history, versioned evaluation, atomic persistence, and determinism before claiming replay capability |
 
 The existing data-model successful-closure criteria, branch-specific milestones, source-domain boundaries, and last-verified-state preservation remain unchanged. This addition supplies the next draft artifact; it does not establish cryptographic, runtime, clinical, or regulatory verification.
+
+## Python reference scaffold 2026-10-03
+
+The user supplied corrected architecture and requested the actual Python stub files and schema outline. [reference/README.md](../reference/README.md) records the supplied design direction and repository-editor completion of the event flow, API targets, folder map, and implementation boundaries. Existing uploaded source artifacts remain unchanged.
+
+The Python services fail closed: authority/read handlers do not ALLOW or disclose, transitions do not PROMOTE, and reconciliation/reconstruction remain HOLD. The transition table and synthetic inbox/conflict helpers demonstrate selected boundaries without authenticating vendors or processing real patient data. A policy-version label alone does not establish policy validity or grant authority.
+
+The synthetic fixtures record **expected contract behavior**, including hypothetical ALLOW/PROMOTE decisions. They are not executed service outputs. The supplied architecture's claim of complete enforcement is not adopted as runtime evidence.
+
+Corrections carried into the scaffold:
+
+- Conflict evidence survives a rejected edge; a blocking conflict vetoes provisional promotion before any future commit.
+- Source identity must be verified separately from client labels; unresolved identity is HOLD.
+- Exact redelivery is distinct from a new evaluation of an already retained event after qualification; incompatible identity reuse is HOLD.
+- Consumer checkpoints committed with effects form an inbox/checkpoint pattern; an outbox covers outgoing delivery. Neither integration is implemented.
+- Append-chain order is distinct from source causality. Canonical integrity encoding and trusted verification anchors remain pending.
+- The proposed universal six-year audit minimum is not ratified. Retention is scoped by record category and applicable policy; no indefinite CLOSED default is set.
+- Event/decision/promotion/audit/checkpoint persistence needs one transaction and concurrency control; the SQL draft does not supply an authenticated writer or full policy enforcement.
+
+Verification: 19 Python boundary tests passed; the default CLI returned HOLD / POLICY_UNRESOLVED with no disclosed data. Fixture links, source checksums, and Markdown references were checked during preparation. **The SQL schema has not been applied or validated against a PostgreSQL instance.** No exactly-once, hash-chain, clinical, or compliance result is established.

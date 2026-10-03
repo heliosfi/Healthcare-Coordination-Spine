@@ -6,7 +6,7 @@ Prescription coordination across patient, prescriber, pharmacy, and payer system
 
 ## Current status
 
-Documentation baseline recorded on 2026-10-03 under **Nicholas B. Carty (N.B.C.) authority**. The v0.1 data model incorporates the subsequently authorized successful-closure criteria. The authority and transition contracts are design specifications. The Audit & Provenance Contract is now included as an imported draft, with discrepancies tracked before ratification. There is no reference implementation, deployed service, clinical validation, vendor connection, or compliance certification in this repository.
+Documentation baseline recorded on 2026-10-03 under **Nicholas B. Carty (N.B.C.) authority**. The v0.1 data model incorporates the subsequently authorized successful-closure criteria. The authority and transition contracts are design specifications. The Audit & Provenance Contract is now included as an imported draft, with discrepancies tracked before ratification. A [local Python reference scaffold](reference/README.md) now supplies fail-closed stubs, a draft SQL schema, synthetic fixtures, and boundary tests. Full enforcement, deployed services, clinical validation, vendor connections, and compliance certification remain unestablished.
 
 ## Read in order
 
@@ -19,6 +19,7 @@ Documentation baseline recorded on 2026-10-03 under **Nicholas B. Carty (N.B.C.)
 | 5 | [v0.1 Audit & Provenance Contract](docs/specifications/v0.1-audit-provenance-contract.md) | Imported draft; reconciliation pending |
 | 6 | [Worked prescription scenario](docs/examples/prescription-coordination.md) | Synthetic conflict and happy-path walkthrough |
 | 7 | [Provenance, clarifications, and remaining work](docs/specification-status.md) | Source inventory and implementation boundary |
+| 8 | [Python reference scaffold](reference/README.md) | Local fail-closed stubs; draft SQL; synthetic fixtures |
 
 The [original v0 HTML](archive/source-artifacts/v0-system-definition.html), [original v0.1 data-model HTML](archive/source-artifacts/v0.1-data-model.html), and [original Audit & Provenance draft HTML](archive/source-artifacts/v0.1-audit-provenance-contract.html) are preserved unchanged. The Markdown specifications distinguish later conversation-authorized completion from the uploaded source. Examples and future timestamps are illustrative, not patient records or execution evidence.
 
@@ -33,6 +34,6 @@ The [original v0 HTML](archive/source-artifacts/v0-system-definition.html), [ori
 
 ## Next bounded artifact
 
-Reconcile the imported **Audit & Provenance draft** with the preceding contracts before ratification, then proceed to adapter contracts and a reference implementation. Event identity, ordering, retention/access rules, and implementation prerequisites are tracked in [specification status](docs/specification-status.md#audit--provenance-draft-import-2026-10-03).
+Reconcile the imported **Audit & Provenance draft** with the preceding contracts before ratification. The local reference scaffold keeps unresolved policy/evaluation paths on HOLD; replacing those stubs requires reviewed adapter, policy, and persistence contracts. Event identity, ordering, retention/access rules, and implementation prerequisites are tracked in [specification status](docs/specification-status.md#audit--provenance-draft-import-2026-10-03).
 
 Conceptual framework and authority: Nicholas B. Carty (N.B.C.). Assistant-assisted documentation is identified in the provenance record. Rights: [© HeliosFi LLC. All Rights Reserved.](COPYRIGHT.md)

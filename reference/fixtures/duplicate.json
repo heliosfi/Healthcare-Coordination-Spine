@@ -1,0 +1,30 @@
+{
+  "synthetic": true,
+  "status": "EXPECTED_CONTRACT_BEHAVIOR_NOT_EXECUTED",
+  "original": {
+    "event_id": "fixture_original",
+    "coordination_id": "fixture_episode",
+    "source_system": "fixture_verified_namespace",
+    "source_event_id": "fixture_origin_1",
+    "event_type": "READY",
+    "payload": {
+      "status": "READY"
+    }
+  },
+  "duplicate_delivery": {
+    "new_attempt_id": "fixture_delivery_2",
+    "result": "REJECT",
+    "reason_code": "DUPLICATE_EVENT",
+    "returned_event_id": "fixture_original",
+    "state_changed": false
+  },
+  "incompatible_identity_reuse": {
+    "changed_payload": {
+      "status": "APPROVED"
+    },
+    "expected_result": "HOLD",
+    "reason_code": "SOURCE_IDENTITY_COLLISION",
+    "original_preserved": true
+  },
+  "retention_policy_version": "fixture_retention_v1"
+}

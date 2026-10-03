@@ -1,0 +1,74 @@
+{
+  "synthetic": true,
+  "status": "EXPECTED_CONTRACT_BEHAVIOR_NOT_EXECUTED",
+  "coordination_id": "fixture_conflict_episode",
+  "source_events": [
+    {
+      "event_id": "fixture_payer_request",
+      "source_authority": "PAYER",
+      "payload": {
+        "pa_outcome": "NEEDS_INFORMATION"
+      },
+      "identity_evidence_ref": "fixture_verified_identity_1",
+      "authority_basis_ref": "fixture_payer_scope_basis_1"
+    },
+    {
+      "event_id": "fixture_automation_claim",
+      "source_authority": "PAYER",
+      "payload": {
+        "pa_outcome": "APPROVED"
+      },
+      "identity_evidence_ref": "fixture_verified_identity_2",
+      "authority_basis_ref": "fixture_payer_scope_basis_2"
+    }
+  ],
+  "verified_state": "NEEDS_INFORMATION",
+  "expected_transition_decision": {
+    "result": "REJECT",
+    "reason_code": "INVALID_TRANSITION",
+    "state_changed": false
+  },
+  "expected_conflict": {
+    "conflict_id": "fixture_conflict",
+    "event_refs": [
+      "fixture_payer_request",
+      "fixture_automation_claim"
+    ],
+    "resolution_state": "HOLD",
+    "promotion_blocked": true,
+    "authority_basis_refs": [
+      "fixture_payer_basis"
+    ],
+    "fact_scope": "fixture_same_pa_instance_current_contradiction"
+  },
+  "reconciliation": {
+    "qualification_state": "VERIFIED_STATE",
+    "governing_event_ref": "fixture_payer_request",
+    "authority_basis_ref": "fixture_payer_basis",
+    "creates_promotion": false,
+    "evidence_basis_ref": "fixture_payer_reconfirmed_current_outcome",
+    "policy_version": "fixture_policy_v1",
+    "resolved_by": "fixture_competent_reviewer",
+    "resolved_at": "2026-10-03T12:00:00Z"
+  },
+  "reevaluation_attempt": {
+    "attempt_id": "fixture_new_evaluation",
+    "event_ref": "fixture_payer_request",
+    "guards": {
+      "G1": "UNRESOLVED",
+      "G2": "UNRESOLVED",
+      "G3": "UNRESOLVED",
+      "G4": "UNRESOLVED",
+      "G5": "UNRESOLVED",
+      "G6": "UNRESOLVED",
+      "G7": "UNRESOLVED",
+      "G8": "UNRESOLVED",
+      "G9": "UNRESOLVED",
+      "G10": "UNRESOLVED"
+    },
+    "expected_result": "HOLD",
+    "state_changed": false,
+    "note": "A separate evaluation is not a duplicate delivery. Qualification does not supply transition/ordering evidence."
+  },
+  "retention_policy_version": "fixture_retention_v1"
+}

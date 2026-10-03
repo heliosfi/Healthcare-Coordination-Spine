@@ -1,0 +1,1288 @@
+{
+  "synthetic": true,
+  "status": "EXPECTED_CONTRACT_BEHAVIOR_NOT_EXECUTED",
+  "scaffold_default_result": "HOLD",
+  "policy_version": "fixture_policy_v1",
+  "records": [
+    {
+      "event": {
+        "event_id": "fixture_event_1",
+        "coordination_id": "fixture_episode",
+        "source_system": "fixture_prescriber",
+        "source_event_id": "fixture_source_1",
+        "source_authority": "PRESCRIBER",
+        "actor_id": "fixture_actor_prescriber",
+        "actor_organization": "fixture_org",
+        "event_type": "PRESCRIBED",
+        "source_timestamp": "2026-10-03T12:01:00Z",
+        "received_at": "2026-10-03T12:01:01Z",
+        "payload": {
+          "status": "PRESCRIBED"
+        },
+        "identity_evidence_ref": "fixture_identity_prescriber",
+        "ordering_evidence_ref": "fixture_order_1",
+        "previous_event_ref": null
+      },
+      "authorization_decision": {
+        "authorization_id": "fixture_auth_1",
+        "result": "ALLOW",
+        "reason_code": "SYNTHETIC_EXPECTATION",
+        "policy_version": "fixture_policy_v1",
+        "purpose": "care_coordination",
+        "patient_ref": "fixture_patient",
+        "authority_basis_ref": "fixture_authority_prescriber",
+        "consent_basis_ref": "fixture_consent_scope"
+      },
+      "transition_decision": {
+        "transition_id": "fixture_transition_1",
+        "from_state": null,
+        "requested_to_state": "PRESCRIBED",
+        "result": "PROMOTE",
+        "guards": {
+          "G1": "PASS",
+          "G2": "PASS",
+          "G3": "PASS",
+          "G4": "PASS",
+          "G5": "PASS",
+          "G6": "PASS",
+          "G7": "PASS",
+          "G8": "PASS",
+          "G9": "PASS",
+          "G10": "PASS"
+        },
+        "policy_version": "fixture_policy_v1",
+        "reason_code": "SYNTHETIC_EXPECTATION"
+      },
+      "expected_promotion": {
+        "promotion_id": "fixture_promotion_1",
+        "prior_version": 0,
+        "new_version": 1,
+        "status": "PRESCRIBED",
+        "event_ref": "fixture_event_1",
+        "authorization_ref": "fixture_auth_1",
+        "transition_ref": "fixture_transition_1",
+        "provenance_refs": [
+          "fixture_event_1",
+          "fixture_auth_1",
+          "fixture_transition_1"
+        ],
+        "closure_basis": [],
+        "closed_at": null,
+        "responsible_actor": "PHARMACY",
+        "next_required_action": "fixture_workflow_action",
+        "patient_action": "None",
+        "closure_reason": null,
+        "confidence": "source-confirmed"
+      },
+      "expected_audit": {
+        "audit_id": "fixture_audit_1",
+        "authorization_ref": "fixture_auth_1",
+        "transition_ref": "fixture_transition_1",
+        "promotion_ref": "fixture_promotion_1",
+        "retention_policy_version": "fixture_retention_v1"
+      }
+    },
+    {
+      "event": {
+        "event_id": "fixture_event_2",
+        "coordination_id": "fixture_episode",
+        "source_system": "fixture_pharmacy",
+        "source_event_id": "fixture_source_2",
+        "source_authority": "PHARMACY",
+        "actor_id": "fixture_actor_pharmacy",
+        "actor_organization": "fixture_org",
+        "event_type": "PRESCRIPTION_RECEIVED",
+        "source_timestamp": "2026-10-03T12:02:00Z",
+        "received_at": "2026-10-03T12:02:01Z",
+        "payload": {
+          "status": "PRESCRIPTION_RECEIVED"
+        },
+        "identity_evidence_ref": "fixture_identity_pharmacy",
+        "ordering_evidence_ref": "fixture_order_2",
+        "previous_event_ref": "fixture_event_1"
+      },
+      "authorization_decision": {
+        "authorization_id": "fixture_auth_2",
+        "result": "ALLOW",
+        "reason_code": "SYNTHETIC_EXPECTATION",
+        "policy_version": "fixture_policy_v1",
+        "purpose": "care_coordination",
+        "patient_ref": "fixture_patient",
+        "authority_basis_ref": "fixture_authority_pharmacy",
+        "consent_basis_ref": "fixture_consent_scope"
+      },
+      "transition_decision": {
+        "transition_id": "fixture_transition_2",
+        "from_state": "PRESCRIBED",
+        "requested_to_state": "PRESCRIPTION_RECEIVED",
+        "result": "PROMOTE",
+        "guards": {
+          "G1": "PASS",
+          "G2": "PASS",
+          "G3": "PASS",
+          "G4": "PASS",
+          "G5": "PASS",
+          "G6": "PASS",
+          "G7": "PASS",
+          "G8": "PASS",
+          "G9": "PASS",
+          "G10": "PASS"
+        },
+        "policy_version": "fixture_policy_v1",
+        "reason_code": "SYNTHETIC_EXPECTATION"
+      },
+      "expected_promotion": {
+        "promotion_id": "fixture_promotion_2",
+        "prior_version": 1,
+        "new_version": 2,
+        "status": "PRESCRIPTION_RECEIVED",
+        "event_ref": "fixture_event_2",
+        "authorization_ref": "fixture_auth_2",
+        "transition_ref": "fixture_transition_2",
+        "provenance_refs": [
+          "fixture_event_2",
+          "fixture_auth_2",
+          "fixture_transition_2"
+        ],
+        "closure_basis": [],
+        "closed_at": null,
+        "responsible_actor": "PHARMACY",
+        "next_required_action": "fixture_workflow_action",
+        "patient_action": "None",
+        "closure_reason": null,
+        "confidence": "source-confirmed"
+      },
+      "expected_audit": {
+        "audit_id": "fixture_audit_2",
+        "authorization_ref": "fixture_auth_2",
+        "transition_ref": "fixture_transition_2",
+        "promotion_ref": "fixture_promotion_2",
+        "retention_policy_version": "fixture_retention_v1"
+      }
+    },
+    {
+      "event": {
+        "event_id": "fixture_event_3",
+        "coordination_id": "fixture_episode",
+        "source_system": "fixture_pharmacy",
+        "source_event_id": "fixture_source_3",
+        "source_authority": "PHARMACY",
+        "actor_id": "fixture_actor_pharmacy",
+        "actor_organization": "fixture_org",
+        "event_type": "COVERAGE_CHECK",
+        "source_timestamp": "2026-10-03T12:03:00Z",
+        "received_at": "2026-10-03T12:03:01Z",
+        "payload": {
+          "status": "COVERAGE_CHECK"
+        },
+        "identity_evidence_ref": "fixture_identity_pharmacy",
+        "ordering_evidence_ref": "fixture_order_3",
+        "previous_event_ref": "fixture_event_2"
+      },
+      "authorization_decision": {
+        "authorization_id": "fixture_auth_3",
+        "result": "ALLOW",
+        "reason_code": "SYNTHETIC_EXPECTATION",
+        "policy_version": "fixture_policy_v1",
+        "purpose": "care_coordination",
+        "patient_ref": "fixture_patient",
+        "authority_basis_ref": "fixture_authority_pharmacy",
+        "consent_basis_ref": "fixture_consent_scope"
+      },
+      "transition_decision": {
+        "transition_id": "fixture_transition_3",
+        "from_state": "PRESCRIPTION_RECEIVED",
+        "requested_to_state": "COVERAGE_CHECK",
+        "result": "PROMOTE",
+        "guards": {
+          "G1": "PASS",
+          "G2": "PASS",
+          "G3": "PASS",
+          "G4": "PASS",
+          "G5": "PASS",
+          "G6": "PASS",
+          "G7": "PASS",
+          "G8": "PASS",
+          "G9": "PASS",
+          "G10": "PASS"
+        },
+        "policy_version": "fixture_policy_v1",
+        "reason_code": "SYNTHETIC_EXPECTATION"
+      },
+      "expected_promotion": {
+        "promotion_id": "fixture_promotion_3",
+        "prior_version": 2,
+        "new_version": 3,
+        "status": "COVERAGE_CHECK",
+        "event_ref": "fixture_event_3",
+        "authorization_ref": "fixture_auth_3",
+        "transition_ref": "fixture_transition_3",
+        "provenance_refs": [
+          "fixture_event_3",
+          "fixture_auth_3",
+          "fixture_transition_3"
+        ],
+        "closure_basis": [],
+        "closed_at": null,
+        "responsible_actor": "PHARMACY",
+        "next_required_action": "fixture_workflow_action",
+        "patient_action": "None",
+        "closure_reason": null,
+        "confidence": "source-confirmed"
+      },
+      "expected_audit": {
+        "audit_id": "fixture_audit_3",
+        "authorization_ref": "fixture_auth_3",
+        "transition_ref": "fixture_transition_3",
+        "promotion_ref": "fixture_promotion_3",
+        "retention_policy_version": "fixture_retention_v1"
+      }
+    },
+    {
+      "event": {
+        "event_id": "fixture_event_4",
+        "coordination_id": "fixture_episode",
+        "source_system": "fixture_payer",
+        "source_event_id": "fixture_source_4",
+        "source_authority": "PAYER",
+        "actor_id": "fixture_actor_payer",
+        "actor_organization": "fixture_org",
+        "event_type": "PA_REQUIRED",
+        "source_timestamp": "2026-10-03T12:04:00Z",
+        "received_at": "2026-10-03T12:04:01Z",
+        "payload": {
+          "status": "PA_REQUIRED"
+        },
+        "identity_evidence_ref": "fixture_identity_payer",
+        "ordering_evidence_ref": "fixture_order_4",
+        "previous_event_ref": "fixture_event_3"
+      },
+      "authorization_decision": {
+        "authorization_id": "fixture_auth_4",
+        "result": "ALLOW",
+        "reason_code": "SYNTHETIC_EXPECTATION",
+        "policy_version": "fixture_policy_v1",
+        "purpose": "care_coordination",
+        "patient_ref": "fixture_patient",
+        "authority_basis_ref": "fixture_authority_payer",
+        "consent_basis_ref": "fixture_consent_scope"
+      },
+      "transition_decision": {
+        "transition_id": "fixture_transition_4",
+        "from_state": "COVERAGE_CHECK",
+        "requested_to_state": "PA_REQUIRED",
+        "result": "PROMOTE",
+        "guards": {
+          "G1": "PASS",
+          "G2": "PASS",
+          "G3": "PASS",
+          "G4": "PASS",
+          "G5": "PASS",
+          "G6": "PASS",
+          "G7": "PASS",
+          "G8": "PASS",
+          "G9": "PASS",
+          "G10": "PASS"
+        },
+        "policy_version": "fixture_policy_v1",
+        "reason_code": "SYNTHETIC_EXPECTATION"
+      },
+      "expected_promotion": {
+        "promotion_id": "fixture_promotion_4",
+        "prior_version": 3,
+        "new_version": 4,
+        "status": "PA_REQUIRED",
+        "event_ref": "fixture_event_4",
+        "authorization_ref": "fixture_auth_4",
+        "transition_ref": "fixture_transition_4",
+        "provenance_refs": [
+          "fixture_event_4",
+          "fixture_auth_4",
+          "fixture_transition_4"
+        ],
+        "closure_basis": [],
+        "closed_at": null,
+        "responsible_actor": "PRESCRIBER",
+        "next_required_action": "fixture_workflow_action",
+        "patient_action": "None",
+        "closure_reason": null,
+        "confidence": "source-confirmed"
+      },
+      "expected_audit": {
+        "audit_id": "fixture_audit_4",
+        "authorization_ref": "fixture_auth_4",
+        "transition_ref": "fixture_transition_4",
+        "promotion_ref": "fixture_promotion_4",
+        "retention_policy_version": "fixture_retention_v1"
+      }
+    },
+    {
+      "event": {
+        "event_id": "fixture_event_5",
+        "coordination_id": "fixture_episode",
+        "source_system": "fixture_prescriber",
+        "source_event_id": "fixture_source_5",
+        "source_authority": "PRESCRIBER",
+        "actor_id": "fixture_actor_prescriber",
+        "actor_organization": "fixture_org",
+        "event_type": "PA_SUBMITTED",
+        "source_timestamp": "2026-10-03T12:05:00Z",
+        "received_at": "2026-10-03T12:05:01Z",
+        "payload": {
+          "status": "PA_SUBMITTED"
+        },
+        "identity_evidence_ref": "fixture_identity_prescriber",
+        "ordering_evidence_ref": "fixture_order_5",
+        "previous_event_ref": "fixture_event_4"
+      },
+      "authorization_decision": {
+        "authorization_id": "fixture_auth_5",
+        "result": "ALLOW",
+        "reason_code": "SYNTHETIC_EXPECTATION",
+        "policy_version": "fixture_policy_v1",
+        "purpose": "care_coordination",
+        "patient_ref": "fixture_patient",
+        "authority_basis_ref": "fixture_authority_prescriber",
+        "consent_basis_ref": "fixture_consent_scope"
+      },
+      "transition_decision": {
+        "transition_id": "fixture_transition_5",
+        "from_state": "PA_REQUIRED",
+        "requested_to_state": "PA_SUBMITTED",
+        "result": "PROMOTE",
+        "guards": {
+          "G1": "PASS",
+          "G2": "PASS",
+          "G3": "PASS",
+          "G4": "PASS",
+          "G5": "PASS",
+          "G6": "PASS",
+          "G7": "PASS",
+          "G8": "PASS",
+          "G9": "PASS",
+          "G10": "PASS"
+        },
+        "policy_version": "fixture_policy_v1",
+        "reason_code": "SYNTHETIC_EXPECTATION"
+      },
+      "expected_promotion": {
+        "promotion_id": "fixture_promotion_5",
+        "prior_version": 4,
+        "new_version": 5,
+        "status": "PA_SUBMITTED",
+        "event_ref": "fixture_event_5",
+        "authorization_ref": "fixture_auth_5",
+        "transition_ref": "fixture_transition_5",
+        "provenance_refs": [
+          "fixture_event_5",
+          "fixture_auth_5",
+          "fixture_transition_5"
+        ],
+        "closure_basis": [],
+        "closed_at": null,
+        "responsible_actor": "PAYER",
+        "next_required_action": "fixture_workflow_action",
+        "patient_action": "None",
+        "closure_reason": null,
+        "confidence": "source-confirmed"
+      },
+      "expected_audit": {
+        "audit_id": "fixture_audit_5",
+        "authorization_ref": "fixture_auth_5",
+        "transition_ref": "fixture_transition_5",
+        "promotion_ref": "fixture_promotion_5",
+        "retention_policy_version": "fixture_retention_v1"
+      }
+    },
+    {
+      "event": {
+        "event_id": "fixture_event_6",
+        "coordination_id": "fixture_episode",
+        "source_system": "fixture_payer",
+        "source_event_id": "fixture_source_6",
+        "source_authority": "PAYER",
+        "actor_id": "fixture_actor_payer",
+        "actor_organization": "fixture_org",
+        "event_type": "PAYER_REVIEW",
+        "source_timestamp": "2026-10-03T12:06:00Z",
+        "received_at": "2026-10-03T12:06:01Z",
+        "payload": {
+          "status": "PAYER_REVIEW"
+        },
+        "identity_evidence_ref": "fixture_identity_payer",
+        "ordering_evidence_ref": "fixture_order_6",
+        "previous_event_ref": "fixture_event_5"
+      },
+      "authorization_decision": {
+        "authorization_id": "fixture_auth_6",
+        "result": "ALLOW",
+        "reason_code": "SYNTHETIC_EXPECTATION",
+        "policy_version": "fixture_policy_v1",
+        "purpose": "care_coordination",
+        "patient_ref": "fixture_patient",
+        "authority_basis_ref": "fixture_authority_payer",
+        "consent_basis_ref": "fixture_consent_scope"
+      },
+      "transition_decision": {
+        "transition_id": "fixture_transition_6",
+        "from_state": "PA_SUBMITTED",
+        "requested_to_state": "PAYER_REVIEW",
+        "result": "PROMOTE",
+        "guards": {
+          "G1": "PASS",
+          "G2": "PASS",
+          "G3": "PASS",
+          "G4": "PASS",
+          "G5": "PASS",
+          "G6": "PASS",
+          "G7": "PASS",
+          "G8": "PASS",
+          "G9": "PASS",
+          "G10": "PASS"
+        },
+        "policy_version": "fixture_policy_v1",
+        "reason_code": "SYNTHETIC_EXPECTATION"
+      },
+      "expected_promotion": {
+        "promotion_id": "fixture_promotion_6",
+        "prior_version": 5,
+        "new_version": 6,
+        "status": "PAYER_REVIEW",
+        "event_ref": "fixture_event_6",
+        "authorization_ref": "fixture_auth_6",
+        "transition_ref": "fixture_transition_6",
+        "provenance_refs": [
+          "fixture_event_6",
+          "fixture_auth_6",
+          "fixture_transition_6"
+        ],
+        "closure_basis": [],
+        "closed_at": null,
+        "responsible_actor": "PAYER",
+        "next_required_action": "fixture_workflow_action",
+        "patient_action": "None",
+        "closure_reason": null,
+        "confidence": "source-confirmed"
+      },
+      "expected_audit": {
+        "audit_id": "fixture_audit_6",
+        "authorization_ref": "fixture_auth_6",
+        "transition_ref": "fixture_transition_6",
+        "promotion_ref": "fixture_promotion_6",
+        "retention_policy_version": "fixture_retention_v1"
+      }
+    },
+    {
+      "event": {
+        "event_id": "fixture_event_7",
+        "coordination_id": "fixture_episode",
+        "source_system": "fixture_payer",
+        "source_event_id": "fixture_source_7",
+        "source_authority": "PAYER",
+        "actor_id": "fixture_actor_payer",
+        "actor_organization": "fixture_org",
+        "event_type": "NEEDS_INFORMATION",
+        "source_timestamp": "2026-10-03T12:07:00Z",
+        "received_at": "2026-10-03T12:07:01Z",
+        "payload": {
+          "status": "NEEDS_INFORMATION"
+        },
+        "identity_evidence_ref": "fixture_identity_payer",
+        "ordering_evidence_ref": "fixture_order_7",
+        "previous_event_ref": "fixture_event_6"
+      },
+      "authorization_decision": {
+        "authorization_id": "fixture_auth_7",
+        "result": "ALLOW",
+        "reason_code": "SYNTHETIC_EXPECTATION",
+        "policy_version": "fixture_policy_v1",
+        "purpose": "care_coordination",
+        "patient_ref": "fixture_patient",
+        "authority_basis_ref": "fixture_authority_payer",
+        "consent_basis_ref": "fixture_consent_scope"
+      },
+      "transition_decision": {
+        "transition_id": "fixture_transition_7",
+        "from_state": "PAYER_REVIEW",
+        "requested_to_state": "NEEDS_INFORMATION",
+        "result": "PROMOTE",
+        "guards": {
+          "G1": "PASS",
+          "G2": "PASS",
+          "G3": "PASS",
+          "G4": "PASS",
+          "G5": "PASS",
+          "G6": "PASS",
+          "G7": "PASS",
+          "G8": "PASS",
+          "G9": "PASS",
+          "G10": "PASS"
+        },
+        "policy_version": "fixture_policy_v1",
+        "reason_code": "SYNTHETIC_EXPECTATION"
+      },
+      "expected_promotion": {
+        "promotion_id": "fixture_promotion_7",
+        "prior_version": 6,
+        "new_version": 7,
+        "status": "NEEDS_INFORMATION",
+        "event_ref": "fixture_event_7",
+        "authorization_ref": "fixture_auth_7",
+        "transition_ref": "fixture_transition_7",
+        "provenance_refs": [
+          "fixture_event_7",
+          "fixture_auth_7",
+          "fixture_transition_7"
+        ],
+        "closure_basis": [],
+        "closed_at": null,
+        "responsible_actor": "PRESCRIBER",
+        "next_required_action": "fixture_workflow_action",
+        "patient_action": "None",
+        "closure_reason": null,
+        "confidence": "source-confirmed"
+      },
+      "expected_audit": {
+        "audit_id": "fixture_audit_7",
+        "authorization_ref": "fixture_auth_7",
+        "transition_ref": "fixture_transition_7",
+        "promotion_ref": "fixture_promotion_7",
+        "retention_policy_version": "fixture_retention_v1"
+      }
+    },
+    {
+      "event": {
+        "event_id": "fixture_event_8",
+        "coordination_id": "fixture_episode",
+        "source_system": "fixture_prescriber",
+        "source_event_id": "fixture_source_8",
+        "source_authority": "PRESCRIBER",
+        "actor_id": "fixture_actor_prescriber",
+        "actor_organization": "fixture_org",
+        "event_type": "PROVIDER_ACTION",
+        "source_timestamp": "2026-10-03T12:08:00Z",
+        "received_at": "2026-10-03T12:08:01Z",
+        "payload": {
+          "status": "PROVIDER_ACTION"
+        },
+        "identity_evidence_ref": "fixture_identity_prescriber",
+        "ordering_evidence_ref": "fixture_order_8",
+        "previous_event_ref": "fixture_event_7"
+      },
+      "authorization_decision": {
+        "authorization_id": "fixture_auth_8",
+        "result": "ALLOW",
+        "reason_code": "SYNTHETIC_EXPECTATION",
+        "policy_version": "fixture_policy_v1",
+        "purpose": "care_coordination",
+        "patient_ref": "fixture_patient",
+        "authority_basis_ref": "fixture_authority_prescriber",
+        "consent_basis_ref": "fixture_consent_scope"
+      },
+      "transition_decision": {
+        "transition_id": "fixture_transition_8",
+        "from_state": "NEEDS_INFORMATION",
+        "requested_to_state": "PROVIDER_ACTION",
+        "result": "PROMOTE",
+        "guards": {
+          "G1": "PASS",
+          "G2": "PASS",
+          "G3": "PASS",
+          "G4": "PASS",
+          "G5": "PASS",
+          "G6": "PASS",
+          "G7": "PASS",
+          "G8": "PASS",
+          "G9": "PASS",
+          "G10": "PASS"
+        },
+        "policy_version": "fixture_policy_v1",
+        "reason_code": "SYNTHETIC_EXPECTATION"
+      },
+      "expected_promotion": {
+        "promotion_id": "fixture_promotion_8",
+        "prior_version": 7,
+        "new_version": 8,
+        "status": "PROVIDER_ACTION",
+        "event_ref": "fixture_event_8",
+        "authorization_ref": "fixture_auth_8",
+        "transition_ref": "fixture_transition_8",
+        "provenance_refs": [
+          "fixture_event_8",
+          "fixture_auth_8",
+          "fixture_transition_8"
+        ],
+        "closure_basis": [],
+        "closed_at": null,
+        "responsible_actor": "PAYER",
+        "next_required_action": "fixture_workflow_action",
+        "patient_action": "None",
+        "closure_reason": null,
+        "confidence": "source-confirmed"
+      },
+      "expected_audit": {
+        "audit_id": "fixture_audit_8",
+        "authorization_ref": "fixture_auth_8",
+        "transition_ref": "fixture_transition_8",
+        "promotion_ref": "fixture_promotion_8",
+        "retention_policy_version": "fixture_retention_v1"
+      }
+    },
+    {
+      "event": {
+        "event_id": "fixture_event_9",
+        "coordination_id": "fixture_episode",
+        "source_system": "fixture_payer",
+        "source_event_id": "fixture_source_9",
+        "source_authority": "PAYER",
+        "actor_id": "fixture_actor_payer",
+        "actor_organization": "fixture_org",
+        "event_type": "PAYER_REVIEW",
+        "source_timestamp": "2026-10-03T12:09:00Z",
+        "received_at": "2026-10-03T12:09:01Z",
+        "payload": {
+          "status": "PAYER_REVIEW"
+        },
+        "identity_evidence_ref": "fixture_identity_payer",
+        "ordering_evidence_ref": "fixture_order_9",
+        "previous_event_ref": "fixture_event_8"
+      },
+      "authorization_decision": {
+        "authorization_id": "fixture_auth_9",
+        "result": "ALLOW",
+        "reason_code": "SYNTHETIC_EXPECTATION",
+        "policy_version": "fixture_policy_v1",
+        "purpose": "care_coordination",
+        "patient_ref": "fixture_patient",
+        "authority_basis_ref": "fixture_authority_payer",
+        "consent_basis_ref": "fixture_consent_scope"
+      },
+      "transition_decision": {
+        "transition_id": "fixture_transition_9",
+        "from_state": "PROVIDER_ACTION",
+        "requested_to_state": "PAYER_REVIEW",
+        "result": "PROMOTE",
+        "guards": {
+          "G1": "PASS",
+          "G2": "PASS",
+          "G3": "PASS",
+          "G4": "PASS",
+          "G5": "PASS",
+          "G6": "PASS",
+          "G7": "PASS",
+          "G8": "PASS",
+          "G9": "PASS",
+          "G10": "PASS"
+        },
+        "policy_version": "fixture_policy_v1",
+        "reason_code": "SYNTHETIC_EXPECTATION"
+      },
+      "expected_promotion": {
+        "promotion_id": "fixture_promotion_9",
+        "prior_version": 8,
+        "new_version": 9,
+        "status": "PAYER_REVIEW",
+        "event_ref": "fixture_event_9",
+        "authorization_ref": "fixture_auth_9",
+        "transition_ref": "fixture_transition_9",
+        "provenance_refs": [
+          "fixture_event_9",
+          "fixture_auth_9",
+          "fixture_transition_9"
+        ],
+        "closure_basis": [],
+        "closed_at": null,
+        "responsible_actor": "PAYER",
+        "next_required_action": "fixture_workflow_action",
+        "patient_action": "None",
+        "closure_reason": null,
+        "confidence": "source-confirmed"
+      },
+      "expected_audit": {
+        "audit_id": "fixture_audit_9",
+        "authorization_ref": "fixture_auth_9",
+        "transition_ref": "fixture_transition_9",
+        "promotion_ref": "fixture_promotion_9",
+        "retention_policy_version": "fixture_retention_v1"
+      }
+    },
+    {
+      "event": {
+        "event_id": "fixture_event_10",
+        "coordination_id": "fixture_episode",
+        "source_system": "fixture_payer",
+        "source_event_id": "fixture_source_10",
+        "source_authority": "PAYER",
+        "actor_id": "fixture_actor_payer",
+        "actor_organization": "fixture_org",
+        "event_type": "APPROVED",
+        "source_timestamp": "2026-10-03T12:10:00Z",
+        "received_at": "2026-10-03T12:10:01Z",
+        "payload": {
+          "status": "APPROVED"
+        },
+        "identity_evidence_ref": "fixture_identity_payer",
+        "ordering_evidence_ref": "fixture_order_10",
+        "previous_event_ref": "fixture_event_9"
+      },
+      "authorization_decision": {
+        "authorization_id": "fixture_auth_10",
+        "result": "ALLOW",
+        "reason_code": "SYNTHETIC_EXPECTATION",
+        "policy_version": "fixture_policy_v1",
+        "purpose": "care_coordination",
+        "patient_ref": "fixture_patient",
+        "authority_basis_ref": "fixture_authority_payer",
+        "consent_basis_ref": "fixture_consent_scope"
+      },
+      "transition_decision": {
+        "transition_id": "fixture_transition_10",
+        "from_state": "PAYER_REVIEW",
+        "requested_to_state": "APPROVED",
+        "result": "PROMOTE",
+        "guards": {
+          "G1": "PASS",
+          "G2": "PASS",
+          "G3": "PASS",
+          "G4": "PASS",
+          "G5": "PASS",
+          "G6": "PASS",
+          "G7": "PASS",
+          "G8": "PASS",
+          "G9": "PASS",
+          "G10": "PASS"
+        },
+        "policy_version": "fixture_policy_v1",
+        "reason_code": "SYNTHETIC_EXPECTATION"
+      },
+      "expected_promotion": {
+        "promotion_id": "fixture_promotion_10",
+        "prior_version": 9,
+        "new_version": 10,
+        "status": "APPROVED",
+        "event_ref": "fixture_event_10",
+        "authorization_ref": "fixture_auth_10",
+        "transition_ref": "fixture_transition_10",
+        "provenance_refs": [
+          "fixture_event_10",
+          "fixture_auth_10",
+          "fixture_transition_10"
+        ],
+        "closure_basis": [],
+        "closed_at": null,
+        "responsible_actor": "PHARMACY",
+        "next_required_action": "fixture_workflow_action",
+        "patient_action": "None",
+        "closure_reason": null,
+        "confidence": "source-confirmed"
+      },
+      "expected_audit": {
+        "audit_id": "fixture_audit_10",
+        "authorization_ref": "fixture_auth_10",
+        "transition_ref": "fixture_transition_10",
+        "promotion_ref": "fixture_promotion_10",
+        "retention_policy_version": "fixture_retention_v1"
+      }
+    },
+    {
+      "event": {
+        "event_id": "fixture_event_11",
+        "coordination_id": "fixture_episode",
+        "source_system": "fixture_pharmacy",
+        "source_event_id": "fixture_source_11",
+        "source_authority": "PHARMACY",
+        "actor_id": "fixture_actor_pharmacy",
+        "actor_organization": "fixture_org",
+        "event_type": "PHARMACY_PROCESSING",
+        "source_timestamp": "2026-10-03T12:11:00Z",
+        "received_at": "2026-10-03T12:11:01Z",
+        "payload": {
+          "status": "PHARMACY_PROCESSING"
+        },
+        "identity_evidence_ref": "fixture_identity_pharmacy",
+        "ordering_evidence_ref": "fixture_order_11",
+        "previous_event_ref": "fixture_event_10"
+      },
+      "authorization_decision": {
+        "authorization_id": "fixture_auth_11",
+        "result": "ALLOW",
+        "reason_code": "SYNTHETIC_EXPECTATION",
+        "policy_version": "fixture_policy_v1",
+        "purpose": "care_coordination",
+        "patient_ref": "fixture_patient",
+        "authority_basis_ref": "fixture_authority_pharmacy",
+        "consent_basis_ref": "fixture_consent_scope"
+      },
+      "transition_decision": {
+        "transition_id": "fixture_transition_11",
+        "from_state": "APPROVED",
+        "requested_to_state": "PHARMACY_PROCESSING",
+        "result": "PROMOTE",
+        "guards": {
+          "G1": "PASS",
+          "G2": "PASS",
+          "G3": "PASS",
+          "G4": "PASS",
+          "G5": "PASS",
+          "G6": "PASS",
+          "G7": "PASS",
+          "G8": "PASS",
+          "G9": "PASS",
+          "G10": "PASS"
+        },
+        "policy_version": "fixture_policy_v1",
+        "reason_code": "SYNTHETIC_EXPECTATION"
+      },
+      "expected_promotion": {
+        "promotion_id": "fixture_promotion_11",
+        "prior_version": 10,
+        "new_version": 11,
+        "status": "PHARMACY_PROCESSING",
+        "event_ref": "fixture_event_11",
+        "authorization_ref": "fixture_auth_11",
+        "transition_ref": "fixture_transition_11",
+        "provenance_refs": [
+          "fixture_event_11",
+          "fixture_auth_11",
+          "fixture_transition_11"
+        ],
+        "closure_basis": [],
+        "closed_at": null,
+        "responsible_actor": "PHARMACY",
+        "next_required_action": "fixture_workflow_action",
+        "patient_action": "None",
+        "closure_reason": null,
+        "confidence": "source-confirmed"
+      },
+      "expected_audit": {
+        "audit_id": "fixture_audit_11",
+        "authorization_ref": "fixture_auth_11",
+        "transition_ref": "fixture_transition_11",
+        "promotion_ref": "fixture_promotion_11",
+        "retention_policy_version": "fixture_retention_v1"
+      }
+    },
+    {
+      "event": {
+        "event_id": "fixture_event_12",
+        "coordination_id": "fixture_episode",
+        "source_system": "fixture_pharmacy",
+        "source_event_id": "fixture_source_12",
+        "source_authority": "PHARMACY",
+        "actor_id": "fixture_actor_pharmacy",
+        "actor_organization": "fixture_org",
+        "event_type": "READY",
+        "source_timestamp": "2026-10-03T12:12:00Z",
+        "received_at": "2026-10-03T12:12:01Z",
+        "payload": {
+          "status": "READY"
+        },
+        "identity_evidence_ref": "fixture_identity_pharmacy",
+        "ordering_evidence_ref": "fixture_order_12",
+        "previous_event_ref": "fixture_event_11"
+      },
+      "authorization_decision": {
+        "authorization_id": "fixture_auth_12",
+        "result": "ALLOW",
+        "reason_code": "SYNTHETIC_EXPECTATION",
+        "policy_version": "fixture_policy_v1",
+        "purpose": "care_coordination",
+        "patient_ref": "fixture_patient",
+        "authority_basis_ref": "fixture_authority_pharmacy",
+        "consent_basis_ref": "fixture_consent_scope"
+      },
+      "transition_decision": {
+        "transition_id": "fixture_transition_12",
+        "from_state": "PHARMACY_PROCESSING",
+        "requested_to_state": "READY",
+        "result": "PROMOTE",
+        "guards": {
+          "G1": "PASS",
+          "G2": "PASS",
+          "G3": "PASS",
+          "G4": "PASS",
+          "G5": "PASS",
+          "G6": "PASS",
+          "G7": "PASS",
+          "G8": "PASS",
+          "G9": "PASS",
+          "G10": "PASS"
+        },
+        "policy_version": "fixture_policy_v1",
+        "reason_code": "SYNTHETIC_EXPECTATION"
+      },
+      "expected_promotion": {
+        "promotion_id": "fixture_promotion_12",
+        "prior_version": 11,
+        "new_version": 12,
+        "status": "READY",
+        "event_ref": "fixture_event_12",
+        "authorization_ref": "fixture_auth_12",
+        "transition_ref": "fixture_transition_12",
+        "provenance_refs": [
+          "fixture_event_12",
+          "fixture_auth_12",
+          "fixture_transition_12"
+        ],
+        "closure_basis": [],
+        "closed_at": null,
+        "responsible_actor": "PATIENT",
+        "next_required_action": "fixture_workflow_action",
+        "patient_action": "Pick up prescription",
+        "closure_reason": null,
+        "confidence": "source-confirmed"
+      },
+      "expected_audit": {
+        "audit_id": "fixture_audit_12",
+        "authorization_ref": "fixture_auth_12",
+        "transition_ref": "fixture_transition_12",
+        "promotion_ref": "fixture_promotion_12",
+        "retention_policy_version": "fixture_retention_v1"
+      }
+    },
+    {
+      "event": {
+        "event_id": "fixture_event_13",
+        "coordination_id": "fixture_episode",
+        "source_system": "fixture_pharmacy",
+        "source_event_id": "fixture_source_13",
+        "source_authority": "PHARMACY",
+        "actor_id": "fixture_actor_pharmacy",
+        "actor_organization": "fixture_org",
+        "event_type": "DISPENSED",
+        "source_timestamp": "2026-10-03T12:13:00Z",
+        "received_at": "2026-10-03T12:13:01Z",
+        "payload": {
+          "status": "DISPENSED"
+        },
+        "identity_evidence_ref": "fixture_identity_pharmacy",
+        "ordering_evidence_ref": "fixture_order_13",
+        "previous_event_ref": "fixture_event_12"
+      },
+      "authorization_decision": {
+        "authorization_id": "fixture_auth_13",
+        "result": "ALLOW",
+        "reason_code": "SYNTHETIC_EXPECTATION",
+        "policy_version": "fixture_policy_v1",
+        "purpose": "care_coordination",
+        "patient_ref": "fixture_patient",
+        "authority_basis_ref": "fixture_authority_pharmacy",
+        "consent_basis_ref": "fixture_consent_scope"
+      },
+      "transition_decision": {
+        "transition_id": "fixture_transition_13",
+        "from_state": "READY",
+        "requested_to_state": "DISPENSED",
+        "result": "PROMOTE",
+        "guards": {
+          "G1": "PASS",
+          "G2": "PASS",
+          "G3": "PASS",
+          "G4": "PASS",
+          "G5": "PASS",
+          "G6": "PASS",
+          "G7": "PASS",
+          "G8": "PASS",
+          "G9": "PASS",
+          "G10": "PASS"
+        },
+        "policy_version": "fixture_policy_v1",
+        "reason_code": "SYNTHETIC_EXPECTATION"
+      },
+      "expected_promotion": {
+        "promotion_id": "fixture_promotion_13",
+        "prior_version": 12,
+        "new_version": 13,
+        "status": "DISPENSED",
+        "event_ref": "fixture_event_13",
+        "authorization_ref": "fixture_auth_13",
+        "transition_ref": "fixture_transition_13",
+        "provenance_refs": [
+          "fixture_event_13",
+          "fixture_auth_13",
+          "fixture_transition_13"
+        ],
+        "closure_basis": [],
+        "closed_at": null,
+        "responsible_actor": "PATIENT",
+        "next_required_action": "fixture_workflow_action",
+        "patient_action": "Confirm receipt",
+        "closure_reason": null,
+        "confidence": "source-confirmed"
+      },
+      "expected_audit": {
+        "audit_id": "fixture_audit_13",
+        "authorization_ref": "fixture_auth_13",
+        "transition_ref": "fixture_transition_13",
+        "promotion_ref": "fixture_promotion_13",
+        "retention_policy_version": "fixture_retention_v1"
+      }
+    },
+    {
+      "event": {
+        "event_id": "fixture_event_14",
+        "coordination_id": "fixture_episode",
+        "source_system": "fixture_patient",
+        "source_event_id": "fixture_source_14",
+        "source_authority": "PATIENT",
+        "actor_id": "fixture_actor_patient",
+        "actor_organization": "fixture_org",
+        "event_type": "PATIENT_RECEIPT_KNOWN",
+        "source_timestamp": "2026-10-03T12:14:00Z",
+        "received_at": "2026-10-03T12:14:01Z",
+        "payload": {
+          "status": "PATIENT_RECEIPT_KNOWN"
+        },
+        "identity_evidence_ref": "fixture_identity_patient",
+        "ordering_evidence_ref": "fixture_order_14",
+        "previous_event_ref": "fixture_event_13"
+      },
+      "authorization_decision": {
+        "authorization_id": "fixture_auth_14",
+        "result": "ALLOW",
+        "reason_code": "SYNTHETIC_EXPECTATION",
+        "policy_version": "fixture_policy_v1",
+        "purpose": "care_coordination",
+        "patient_ref": "fixture_patient",
+        "authority_basis_ref": "fixture_authority_patient",
+        "consent_basis_ref": "fixture_consent_scope"
+      },
+      "transition_decision": {
+        "transition_id": "fixture_transition_14",
+        "from_state": "DISPENSED",
+        "requested_to_state": "PATIENT_RECEIPT_KNOWN",
+        "result": "PROMOTE",
+        "guards": {
+          "G1": "PASS",
+          "G2": "PASS",
+          "G3": "PASS",
+          "G4": "PASS",
+          "G5": "PASS",
+          "G6": "PASS",
+          "G7": "PASS",
+          "G8": "PASS",
+          "G9": "PASS",
+          "G10": "PASS"
+        },
+        "policy_version": "fixture_policy_v1",
+        "reason_code": "SYNTHETIC_EXPECTATION"
+      },
+      "expected_promotion": {
+        "promotion_id": "fixture_promotion_14",
+        "prior_version": 13,
+        "new_version": 14,
+        "status": "PATIENT_RECEIPT_KNOWN",
+        "event_ref": "fixture_event_14",
+        "authorization_ref": "fixture_auth_14",
+        "transition_ref": "fixture_transition_14",
+        "provenance_refs": [
+          "fixture_event_14",
+          "fixture_auth_14",
+          "fixture_transition_14"
+        ],
+        "closure_basis": [],
+        "closed_at": null,
+        "responsible_actor": "PRESCRIBER",
+        "next_required_action": "fixture_workflow_action",
+        "patient_action": "None",
+        "closure_reason": null,
+        "confidence": "patient-reported"
+      },
+      "expected_audit": {
+        "audit_id": "fixture_audit_14",
+        "authorization_ref": "fixture_auth_14",
+        "transition_ref": "fixture_transition_14",
+        "promotion_ref": "fixture_promotion_14",
+        "retention_policy_version": "fixture_retention_v1"
+      }
+    },
+    {
+      "event": {
+        "event_id": "fixture_event_15",
+        "coordination_id": "fixture_episode",
+        "source_system": "fixture_prescriber",
+        "source_event_id": "fixture_source_15",
+        "source_authority": "PRESCRIBER",
+        "actor_id": "fixture_actor_prescriber",
+        "actor_organization": "fixture_org",
+        "event_type": "FOLLOW_UP",
+        "source_timestamp": "2026-10-03T12:15:00Z",
+        "received_at": "2026-10-03T12:15:01Z",
+        "payload": {
+          "status": "FOLLOW_UP"
+        },
+        "identity_evidence_ref": "fixture_identity_prescriber",
+        "ordering_evidence_ref": "fixture_order_15",
+        "previous_event_ref": "fixture_event_14"
+      },
+      "authorization_decision": {
+        "authorization_id": "fixture_auth_15",
+        "result": "ALLOW",
+        "reason_code": "SYNTHETIC_EXPECTATION",
+        "policy_version": "fixture_policy_v1",
+        "purpose": "care_coordination",
+        "patient_ref": "fixture_patient",
+        "authority_basis_ref": "fixture_authority_prescriber",
+        "consent_basis_ref": "fixture_consent_scope"
+      },
+      "transition_decision": {
+        "transition_id": "fixture_transition_15",
+        "from_state": "PATIENT_RECEIPT_KNOWN",
+        "requested_to_state": "FOLLOW_UP",
+        "result": "PROMOTE",
+        "guards": {
+          "G1": "PASS",
+          "G2": "PASS",
+          "G3": "PASS",
+          "G4": "PASS",
+          "G5": "PASS",
+          "G6": "PASS",
+          "G7": "PASS",
+          "G8": "PASS",
+          "G9": "PASS",
+          "G10": "PASS"
+        },
+        "policy_version": "fixture_policy_v1",
+        "reason_code": "SYNTHETIC_EXPECTATION"
+      },
+      "expected_promotion": {
+        "promotion_id": "fixture_promotion_15",
+        "prior_version": 14,
+        "new_version": 15,
+        "status": "FOLLOW_UP",
+        "event_ref": "fixture_event_15",
+        "authorization_ref": "fixture_auth_15",
+        "transition_ref": "fixture_transition_15",
+        "provenance_refs": [
+          "fixture_event_15",
+          "fixture_auth_15",
+          "fixture_transition_15"
+        ],
+        "closure_basis": [],
+        "closed_at": null,
+        "responsible_actor": "PRESCRIBER",
+        "next_required_action": "fixture_workflow_action",
+        "patient_action": "None",
+        "closure_reason": null,
+        "confidence": "source-confirmed"
+      },
+      "expected_audit": {
+        "audit_id": "fixture_audit_15",
+        "authorization_ref": "fixture_auth_15",
+        "transition_ref": "fixture_transition_15",
+        "promotion_ref": "fixture_promotion_15",
+        "retention_policy_version": "fixture_retention_v1"
+      }
+    },
+    {
+      "event": {
+        "event_id": "fixture_event_16",
+        "coordination_id": "fixture_episode",
+        "source_system": "fixture_spine",
+        "source_event_id": "fixture_source_16",
+        "source_authority": "SPINE",
+        "actor_id": "fixture_actor_spine",
+        "actor_organization": "fixture_org",
+        "event_type": "CLOSED",
+        "source_timestamp": "2026-10-03T12:16:00Z",
+        "received_at": "2026-10-03T12:16:01Z",
+        "payload": {
+          "status": "CLOSED"
+        },
+        "identity_evidence_ref": "fixture_identity_spine",
+        "ordering_evidence_ref": "fixture_order_16",
+        "previous_event_ref": "fixture_event_15"
+      },
+      "authorization_decision": {
+        "authorization_id": "fixture_auth_16",
+        "result": "ALLOW",
+        "reason_code": "SYNTHETIC_EXPECTATION",
+        "policy_version": "fixture_policy_v1",
+        "purpose": "care_coordination",
+        "patient_ref": "fixture_patient",
+        "authority_basis_ref": "fixture_authority_spine",
+        "consent_basis_ref": "fixture_consent_scope"
+      },
+      "transition_decision": {
+        "transition_id": "fixture_transition_16",
+        "from_state": "FOLLOW_UP",
+        "requested_to_state": "CLOSED",
+        "result": "PROMOTE",
+        "guards": {
+          "G1": "PASS",
+          "G2": "PASS",
+          "G3": "PASS",
+          "G4": "PASS",
+          "G5": "PASS",
+          "G6": "PASS",
+          "G7": "PASS",
+          "G8": "PASS",
+          "G9": "PASS",
+          "G10": "PASS"
+        },
+        "policy_version": "fixture_policy_v1",
+        "reason_code": "SYNTHETIC_EXPECTATION"
+      },
+      "expected_promotion": {
+        "promotion_id": "fixture_promotion_16",
+        "prior_version": 15,
+        "new_version": 16,
+        "status": "CLOSED",
+        "event_ref": "fixture_event_16",
+        "authorization_ref": "fixture_auth_16",
+        "transition_ref": "fixture_transition_16",
+        "provenance_refs": [
+          "fixture_event_16",
+          "fixture_auth_16",
+          "fixture_transition_16"
+        ],
+        "closure_basis": [
+          "fixture_event_10",
+          "fixture_event_11",
+          "fixture_event_12",
+          "fixture_event_13",
+          "fixture_event_14",
+          "fixture_follow_up_complete"
+        ],
+        "closed_at": "2026-10-03T12:16:02Z",
+        "responsible_actor": null,
+        "next_required_action": null,
+        "patient_action": "None",
+        "closure_reason": "workflow_complete",
+        "confidence": "coordination-attested"
+      },
+      "expected_audit": {
+        "audit_id": "fixture_audit_16",
+        "authorization_ref": "fixture_auth_16",
+        "transition_ref": "fixture_transition_16",
+        "promotion_ref": "fixture_promotion_16",
+        "retention_policy_version": "fixture_retention_v1"
+      }
+    }
+  ],
+  "additional_evidence": [
+    {
+      "event_id": "fixture_follow_up_complete",
+      "source_authority": "PRESCRIBER",
+      "payload": {
+        "required_follow_up_completed": true
+      },
+      "policy_version": "fixture_policy_v1",
+      "authority_basis_ref": "fixture_authority_prescriber",
+      "provenance_refs": [
+        "fixture_event_15"
+      ],
+      "timestamp": "2026-10-03T12:15:30Z"
+    }
+  ],
+  "closure_predicates": {
+    "no_conflict_or_hold": true,
+    "no_required_action": true,
+    "no_responsible_actor": true,
+    "branch_milestones_source_backed": true,
+    "required_receipt_recorded": true,
+    "required_follow_up_satisfied": true,
+    "closure_fields_and_refs_present": true,
+    "spine_attests_only_coordination": true
+  }
+}
